@@ -349,6 +349,35 @@
 
   </div>
 
+
+
+
+
+
+
+
+  <h2>INTERPOLATION & DATA BINDING</h2>
+  Modificato da {{creator_name}}
+  <br>
+  <img [src]="image_campo" alt="No image in assets" style="height:100px">
+  <br>
+  
+  <div>
+  
+  <button (click)="onClickMarco()">EVENT BINDING</button>
+  <br>
+<!-- serve la modifica nei module.ts -->
+  <input [(ngModel)]="value_Marco" type="text">
+  <br>
+  {{value_Marco}}
+  </div>
+
+<app-form-component></app-form-component> 
+
+
+
+
+
   <!-- Resources -->
   <h2>Resources</h2>
   <p>Here are some links to help you get started:</p>
