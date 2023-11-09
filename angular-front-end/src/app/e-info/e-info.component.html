@@ -1,0 +1,85 @@
+
+
+<form #frm="ngForm" (ngSubmit)="updateInfo(frm)">
+<div>
+
+    <input type="text" name="location" value="" ngModel>
+    <button type="submit" name="button">Add info</button>
+</div>
+
+</form>
+
+
+
+
+
+
+
+
+
+
+<button type="button" name="button" (click)="getInfoFromService1()">
+    Empl1
+</button>
+
+<ul class ="list-group">
+    <li *ngFor = "let info of infoReceived" class ="list-group-info">{{info}}</li>
+</ul>
+
+
+<button type="button" name="button" (click)="getInfoFromService2()">
+    Empl2
+</button>
+
+<ul class ="list-group">
+    <li *ngFor = "let info of infoReceived2" class ="list-group-info">{{info}}</li>
+</ul>
+
+
+
+<button type="button" name="button" (click)="getInfoFromService3()">
+    Empl3
+</button>
+
+<ul class ="list-group">
+    <li *ngFor = "let info of infoReceived3" class ="list-group-info">{{info}}</li>
+</ul>
+
+<br>
+
+<div [ngSwitch]="day">
+
+<div *ngSwitchCase =0>dom</div>
+<div *ngSwitchCase =1>lun</div>
+<div *ngSwitchCase =2>mar!</div>
+<div *ngSwitchCase =3>mer!</div>
+<div *ngSwitchCase =4>gio!</div>
+<div *ngSwitchCase =5>ven!</div>
+<div *ngSwitchCase =6>sab!</div>
+<div *ngSwitchDefault>Something wrong!</div>
+
+
+</div>
+
+
+
+
+<br>
+
+<h1>
+    PIPE
+    Date: {{dateToday}}<br>
+    Date Pipe: {{dateToday | date| uppercase}}<br>
+    Date Pipe: {{dateToday | date: 'short'| lowercase}}<br>
+    Name: {{name | uppercase}}<br>
+    Name: {{name | slice:6}}<br>
+</h1>
+
+
+
+<br>
+
+<h1>
+    Reverse con customPipe: {{"marco 6 super" | mioTubo}}<br>
+
+</h1>

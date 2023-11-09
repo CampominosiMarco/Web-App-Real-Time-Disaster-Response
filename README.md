@@ -27,8 +27,30 @@ ng serve
 http://localhost:4200/
 
 
+PER CREARE COMPONENTI
+ng g c navbar
+
+i file spec.ts sono degli unit test
 
 
+
+https://startbootstrap.com/template/small-business
+
+PS C:\Users\Marco\________VS Code\Progetti VS Code\FullStack\angular-front-end> npm install jquery
+
+npm install bootstrap
+
+modificare angular.json con gli script di bootstrap e jquery da node.js
+mod anche css di boostrap nel json
+
+
+ng g service data
+
+ng g pipe mio_tubo
+
+
+
+npm
 
 jasmine + karma per test ANGULAR
 
