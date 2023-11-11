@@ -15,7 +15,9 @@ describe('TermsConditionsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  let check1 = '[TermsConditionsComponent] component creation';
+  it(check1, () => {
     expect(component).toBeTruthy();
+    console.log(check1 + " -> [OK]");
   });
 });

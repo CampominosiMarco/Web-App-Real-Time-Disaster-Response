@@ -50,6 +50,12 @@ ng g pipe mio_tubo
 
 
 
+PS C:\Users\Marco\________VS Code\Progetti VS Code\FullStack\angular-front-end> ng test angular-front-end
+
+oppure del solo componente:
+ng test --include="**/logo-512.component.spec.ts"
+
+
 npm
 
 jasmine + karma per test ANGULAR

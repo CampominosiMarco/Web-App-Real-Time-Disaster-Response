@@ -9,7 +9,7 @@ export class NavbarComponent implements OnInit {
   constructor(){}
   
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    console.log('Method not implemented.')
   }
   
 }

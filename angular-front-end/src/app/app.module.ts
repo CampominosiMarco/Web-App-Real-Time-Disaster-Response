@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,17 +26,19 @@ import { Logo512Component } from './components/logo-512/logo-512.component';
 
 @NgModule({
   declarations: [
+    NavbarComponent,
+    RegistrationComponent,
     AppComponent,
-
+ //   ReactiveFormsModule,
     FormComponentComponent,
-     NavbarComponent,
+
      LoginComponent,  //Fondamentale indicare tutti i componenti da lanciare all'avvio
      IntroComponent,
      CoursesComponent,
      FooterComponent,
      EInfoComponent,
      MioTuboPipe,
-     RegistrationComponent,
+
      TermsConditionsComponent,
      LogoCompleteComponent,
      HomeComponent,
@@ -45,6 +48,7 @@ import { Logo512Component } from './components/logo-512/logo-512.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    ReactiveFormsModule,
     FormsModule         //Serve per il binding
 
   ],

@@ -7,10 +7,11 @@ import {TermsConditionsComponent} from './components/terms-conditions/terms-cond
 
 import { LoginComponent } from './login/login.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { RegistrationComponent } from './components/registration/registration.component';
 
 const routes: Routes = [
 
-
+  {path: 'reg', component: RegistrationComponent},
   {path: 'conditions', component: TermsConditionsComponent},
 
   {path: 'login', component: LoginComponent},

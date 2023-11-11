@@ -6,5 +6,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./logo-512.component.css']
 })
 export class Logo512Component {
+  imageUrl: string = "/assets/CM-InnovationLab.it_logo_512.png";
+  altText: string = "CM-InnovationLab Logo 512";
+
+  onImageLoad(){
+    
+  }
 
 }
