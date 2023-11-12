@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TermsConditionsComponent } from './terms-conditions.component';
+//Fondamentale in quanto il componente necessita di un altro
+import { LogoCompleteComponent } from '../logo-complete/logo-complete.component';
 
 describe('TermsConditionsComponent', () => {
   let component: TermsConditionsComponent;
@@ -8,7 +9,10 @@ describe('TermsConditionsComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [TermsConditionsComponent]
+      declarations: [
+        TermsConditionsComponent,
+        LogoCompleteComponent     //Fondamentale
+      ]
     });
     fixture = TestBed.createComponent(TermsConditionsComponent);
     component = fixture.componentInstance;
