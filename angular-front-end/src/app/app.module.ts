@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ReactiveFormsModule } from '@angular/forms';
+//import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -27,7 +27,7 @@ import { Logo512Component } from './components/logo-512/logo-512.component';
 @NgModule({
   declarations: [
     NavbarComponent,
-    RegistrationComponent,
+
     AppComponent,
  //   ReactiveFormsModule,
     FormComponentComponent,
@@ -48,7 +48,8 @@ import { Logo512Component } from './components/logo-512/logo-512.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule,
+    RegistrationComponent,        //Questo viene importato perchè è STANDALONE ed ha ReactiveFormsModule all'interno
+  //  ReactiveFormsModule,
     FormsModule         //Serve per il binding
 
   ],

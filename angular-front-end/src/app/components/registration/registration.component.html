@@ -10,68 +10,88 @@
   
                   <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Registrati</p>
   
-                  <form class="mx-1 mx-md-4" [formGroup]="userEmails">  <!--validazione mail-->
+                  <form class="mx-1 mx-md-4" [formGroup]="formAll" (ngSubmit)="onSubmit()">  <!--validazione mail  -->
   
-                    <div class="d-flex flex-row align-items-center mb-4">
+                    <div class="d-flex flex-row align-items-center mb-4 form-group">
                       <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                       <div class="form-outline flex-fill mb-0">
-                        <input type="text" id="userName" class="form-control" required/>
                         <label class="form-label" for="userName">Nome Utente</label>
+                        <input type="text" id="userName" class= "form-control" [formControl]="regUserName" formControlName="name" required/>
                       </div>
                     </div>
   
-                    <div class="d-flex flex-row align-items-center mb-4 form-group">  <!--validazione mail-->
-                      <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
-                      <div class="form-outline flex-fill mb-0">
-                        <input type="email" id="mail" class="form-control" formControlName="primaryEmail" required/>
-                         <!--  [class.is-invalid] = "userEmails.get('primaryEmail').invalid && userEmails.get('primaryEmail').touched"/>-->
-                        <label class="form-label" for="mail">Mail</label>
-                      </div>
-                    </div>
 
-                    <div class="d-flex flex-row align-items-center mb-4 form-group">  <!--validazione mail-->
-                      <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
-                      <div class="form-outline flex-fill mb-0">
-                        <input type="email" id="mail2" class="form-control" formControlName="secondaryEmail" required/>
-                        <!--  [class.is-invalid] = "userEmails.get('secondaryEmail').invalid && userEmails.get('secondaryEmail').touched"/>-->
-                        <label class="form-label" for="mail">Ripeti Mail</label>
-                      </div>
-                    </div>
-
-                    <div class="d-flex flex-row align-items-center mb-4">
+                    <div formGroupName="mails">
+                      <div class="d-flex flex-row align-items-center mb-4 form-group">  <!--validazione mail-->
                         <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                         <div class="form-outline flex-fill mb-0">
-                          <input type="mobile" id="mobilePhone" class="form-control" required/>
+                          <label class="form-label" for="mail">Mail</label>
+                          <input type="email" id="mail" class= "form-control" [formControl]="regUserPrimaryEmail" formControlName="mail1" required/>
+                          <!--  [class.is-invalid] = "userEmails.get('primaryEmail').invalid && userEmails.get('primaryEmail').touched"/>-->
+
+                        </div>
+                      </div>
+
+                      <div class="d-flex flex-row align-items-center mb-4 form-group">  <!--validazione mail-->
+                        <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                        <div class="form-outline flex-fill mb-0">
+                          <label class="form-label" for="mail">Ripeti Mail</label>
+                          <input type="email" id="mail2" class= "form-control" [formControl]="regUserSecondaryEmail" formControlName="mail2" required/>
+                          <!--  [class.is-invalid] = "userEmails.get('secondaryEmail').invalid && userEmails.get('secondaryEmail').touched"/>-->
+
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="d-flex flex-row align-items-center mb-4 form-group">
+                        <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                        <div class="form-outline flex-fill mb-0">
                           <label class="form-label" for="mobilePhone">Cellulare</label>
+                          <input type="mobile" id="mobilePhone" class= "form-control" [formControl]="regUserMobile" formControlName="mobile" required/>
+
+                        </div>
+                      </div>
+
+                    <div formGroupName="pass">
+                      <div class="d-flex flex-row align-items-center mb-4 form-group">
+                        <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                        <div class="form-outline flex-fill mb-0">
+                          <label class="form-label" for="pass">Password</label>
+                          <input type="password" id="pass" class= "form-control" [formControl]="regUserPrimaryPassword" formControlName="pass1" required/>
+
                         </div>
                       </div>
   
-                    <div class="d-flex flex-row align-items-center mb-4">
-                      <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
-                      <div class="form-outline flex-fill mb-0">
-                        <input type="password" id="pass" class="form-control" required/>
-                        <label class="form-label" for="pass">Password</label>
+                      <div class="d-flex flex-row align-items-center mb-4 form-group">
+                        <i class="fas fa-key fa-lg me-3 fa-fw"></i>
+                        <div class="form-outline flex-fill mb-0">
+                          <label class="form-label" for="passCheck">Ripeti password</label>
+                          <input type="password" id="passCheck" class= "form-control" [formControl]="regUserSecondaryPassword" formControlName="pass2" required/>
+
+                        </div>
                       </div>
                     </div>
-  
-                    <div class="d-flex flex-row align-items-center mb-4">
-                      <i class="fas fa-key fa-lg me-3 fa-fw"></i>
-                      <div class="form-outline flex-fill mb-0">
-                        <input type="password" id="passCheck" class="form-control" required/>
-                        <label class="form-label" for="passCheck">Ripeti password</label>
-                      </div>
-                    </div>
-  
-                    <div class="form-check d-flex justify-content-center mb-5">
-                      <input class="form-check-input me-2" type="checkbox" value="" id="checkBoxAgree" required/>
+
+
+
+                    <div class="form-check d-flex justify-content-center mb-5 form-group">
+                      <input class="form-check-input me-2" type="checkbox" value="" id="checkBoxAgree" [formControl]="regUserAgree" formControlName="agree" required/>
                       <label class="form-check-label" for="checkBoxAgree">
                         Accetto i <a href="#"  routerLink="/conditions" routerLinkActive="active">Termini del Servizio</a>
                       </label>
                     </div>
   
                     <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                      <button type="button" class="btn btn-primary btn-lg">Registrami</button>
+                      <button type="submit" class="btn btn-primary btn-lg" >Registrami</button> <!--   [disabled]="!formAll.valid"-->
                     </div>
+
+                    <p>Value: {{ regUserName.value }}</p>
+                    <p>Value: {{ regUserPrimaryEmail.value }}</p>
+                    <p>Value: {{ regUserSecondaryEmail.value }}</p>
+                    <p>Value: {{ regUserMobile.value }}</p>
+                    <p>Value: {{ regUserPrimaryPassword.value }}</p>
+                    <p>Value: {{ regUserSecondaryPassword.value }}</p>
+                    <p>Value: {{ regUserAgree.value }}</p>
   
                   </form>
   
