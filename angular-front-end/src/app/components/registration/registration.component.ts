@@ -12,7 +12,6 @@ import { Validators } from '@angular/forms';
   imports: [ReactiveFormsModule, CommonModule]
 })
 
-
 export class RegistrationComponent {
 
 //https://angular.io/guide/form-validation#built-in-validator-functions
@@ -23,7 +22,7 @@ export class RegistrationComponent {
   regUserPrimaryEmail = new FormControl(null,[
     Validators.required,
     Validators.minLength(6),
-    Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]);  //Preferisco pattern a 'mail' (https://angular.io/api/forms/Validators#email)
+    Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]);  //Better then pattern 'mail' (https://angular.io/api/forms/Validators#email)
   regUserConfirmEmail = new FormControl(null,[
     Validators.required,
     Validators.minLength(6),
@@ -31,9 +30,14 @@ export class RegistrationComponent {
   regUserMobile = new FormControl(null, [
     Validators.required,
     Validators.pattern("^[0-9]\\d*$")]);
-  regUserPrimaryPassword = new FormControl(null, Validators.required);
-  regUserConfirmPassword = new FormControl(null, Validators.required);
+  regUserPrimaryPassword = new FormControl(null, [
+    Validators.required,
+    Validators.minLength(8)]);
+  regUserConfirmPassword = new FormControl(null, [
+    Validators.required,
+    Validators.minLength(8)]);
   regUserAgree = new FormControl(false, Validators.requiredTrue);
+
 
   formAll = new FormGroup({
     name: this.regUserName, 
@@ -41,52 +45,53 @@ export class RegistrationComponent {
     mails: new FormGroup({
       mail1: this.regUserPrimaryEmail, 
       mail2: this.regUserConfirmEmail
-    },{validators: matchMail} ),
+    }, {validators: matchMail} ),
 
     mobile: this.regUserMobile,
 
     pass: new FormGroup({
       pass1: this.regUserPrimaryPassword, 
       pass2: this.regUserConfirmPassword, 
-    },{validators: matchPassword} ),
+    }, {validators: matchPassword} ),
 
     agree: this.regUserAgree
-
-
-    
   });
 
 
-
-
-
   onSubmit(){
-    console.warn(this.formAll.value);
-    console.warn(this.formAll.errors);
+    if (this.formAll.errors != null){
+      console.warn("Errors:", this.formAll.errors);
+    }
 
-    console.log("User:", this.regUserName.errors);
+    if (this.regUserName.errors != null){
+      console.warn("User:", this.regUserName.errors);
+    }
 
-    console.log("Primary Mail:", this.regUserPrimaryEmail.errors);
-    console.log("Secondary Mail:", this.regUserConfirmEmail.errors);
-    console.log("Match Mails:", this.formAll.controls.mails.errors);
+    if (this.regUserPrimaryEmail.errors != null || this.regUserConfirmEmail.errors != null || this.formAll.controls.mails.errors != null){
+      console.warn("Primary Mail:", this.regUserPrimaryEmail.errors);
+      console.warn("Secondary Mail:", this.regUserConfirmEmail.errors);
+      console.warn("Match Mails:", this.formAll.controls.mails.errors);
+    }
 
-    console.log("Mobile:", this.regUserMobile.errors);
+    if (this.regUserMobile.errors != null){
+      console.warn("Mobile:", this.regUserMobile.errors);
+    }
 
-    console.log("Primary Pass:", this.regUserPrimaryPassword.errors);
-    console.log("Secondary Pass:", this.regUserConfirmPassword.errors);
-    console.log("Match Passwords:", this.formAll.controls.pass.errors);
+    if (this.regUserPrimaryPassword.errors != null || this.regUserConfirmPassword.errors != null || this.formAll.controls.pass.errors != null){
+      console.warn("Primary Pass:", this.regUserPrimaryPassword.errors);
+      console.warn("Secondary Pass:", this.regUserConfirmPassword.errors);
+      console.warn("Match Passwords:", this.formAll.controls.pass.errors);
+    }
 
-    console.log("Agree:", this.regUserAgree.errors);
+    if (this.regUserAgree.errors != null){
+      console.warn("Agree:", this.regUserAgree.errors);
+    }
+
+    console.log(this.formAll.value);
   }
-
-
-
-
-
-
-
-
 }
+
+
 
 //https://angular.io/guide/form-validation#defining-custom-validators
 //https://www.youtube.com/watch?v=QsTp_XB3D4M&ab_channel=Geek97
