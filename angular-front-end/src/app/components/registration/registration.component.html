@@ -20,7 +20,7 @@
                         <label class="form-label" for="userName">Nome Utente</label>
                         <input title="Utente: lunghezza minima 8 caratteri." type="text" id="userName" class= "form-control" [formControl]="regUserName" formControlName="name" required/> <!--  Validation [[formControl]="regUserName" formControlName="name"]  -->
                       
-                        <div *ngIf ="regUserName.touched && regUserName.invalid && regUserAgree.value" class="alert alert-danger"
+                        <div *ngIf ="regUserName.touched && regUserName.invalid && regUserAgree.value" class="alert alert-danger" id="userNameAlert"
                           style="margin-top: 5px; padding: 5px; font-weight: bold; color: white; background-color: red;">
 
                           <p *ngIf="regUserName.errors?.['required']" style="margin: 5px;">Obbligatorio!</p>
@@ -41,7 +41,7 @@
                           <label class="form-label" for="mail">Mail</label>
                           <input type="email" id="mail" class= "form-control" [formControl]="regUserPrimaryEmail" formControlName="mail1" required/>
                       
-                          <div *ngIf ="regUserPrimaryEmail.touched && regUserPrimaryEmail.invalid && regUserAgree.value" class="alert alert-danger"
+                          <div *ngIf ="regUserPrimaryEmail.touched && regUserPrimaryEmail.invalid && regUserAgree.value" class="alert alert-danger" id="mailAlert"
                             style="margin-top: 5px; padding: 5px; font-weight: bold; color: white; background-color: red;">
 
                             <p *ngIf="regUserPrimaryEmail.errors?.['required']" style="margin: 5px;">Obbligatorio!</p>
@@ -60,7 +60,7 @@
                           <input type="email" id="mail2" class= "form-control" [formControl]="regUserConfirmEmail" formControlName="mail2" required/>
 
                           <div *ngIf ="regUserConfirmEmail.touched && regUserAgree.value && ( regUserConfirmEmail.invalid || formAll.controls.mails.invalid)" class="alert alert-danger"
-                            style="margin-top: 5px; padding: 5px; font-weight: bold; color: white; background-color: red;">
+                            id="mail2Alert" style="margin-top: 5px; padding: 5px; font-weight: bold; color: white; background-color: red;">
 
                             <p *ngIf="regUserConfirmEmail.errors?.['required']" style="margin: 5px;">Obbligatorio!</p>
                             <p *ngIf="regUserConfirmEmail.errors?.['minlength']" style="margin: 5px;">Lunghezza minima 6 caratteri!</p>
@@ -82,7 +82,7 @@
                         <label class="form-label" for="mobilePhone">Cellulare</label>
                         <input type="mobile" id="mobilePhone" class= "form-control" [formControl]="regUserMobile" formControlName="mobile" required/>
                       
-                        <div *ngIf ="regUserMobile.touched && regUserMobile.invalid && regUserAgree.value" class="alert alert-danger"
+                        <div *ngIf ="regUserMobile.touched && regUserMobile.invalid && regUserAgree.value" class="alert alert-danger" id="mobilePhoneAlert"
                           style="margin-top: 5px; padding: 5px; font-weight: bold; color: white; background-color: red;">
 
                           <p *ngIf="regUserMobile.errors?.['required']" style="margin: 5px;">Obbligatorio!</p>
@@ -103,7 +103,7 @@
                           <label class="form-label" for="pass">Password</label>
                           <input title="Password: lunghezza minima 8 caratteri." type="password" id="pass" class= "form-control" [formControl]="regUserPrimaryPassword" formControlName="pass1" required/>
                       
-                          <div *ngIf ="regUserPrimaryPassword.touched && regUserPrimaryPassword.invalid && regUserAgree.value" class="alert alert-danger"
+                          <div *ngIf ="regUserPrimaryPassword.touched && regUserPrimaryPassword.invalid && regUserAgree.value" class="alert alert-danger" id="passAlert"
                             style="margin-top: 5px; padding: 5px; font-weight: bold; color: white; background-color: red;">
 
                             <p *ngIf="regUserPrimaryPassword.errors?.['required']" style="margin: 5px;">Obbligatorio!</p>
@@ -121,7 +121,7 @@
                           <input type="password" id="passCheck" class= "form-control" [formControl]="regUserConfirmPassword" formControlName="pass2" required/>
 
                           <div *ngIf ="regUserConfirmPassword.touched && regUserAgree.value && ( regUserConfirmPassword.invalid || formAll.controls.pass.invalid)" class="alert alert-danger"
-                            style="margin-top: 5px; padding: 5px; font-weight: bold; color: white; background-color: red;">
+                            id="passCheckAlert" style="margin-top: 5px; padding: 5px; font-weight: bold; color: white; background-color: red;">
 
                             <p *ngIf="regUserConfirmPassword.errors?.['required']" style="margin: 5px;">Obbligatorio!</p>
                             <p *ngIf="regUserConfirmPassword.errors?.['minlength']" style="margin: 5px;">Lunghezza minima 8 caratteri!</p>

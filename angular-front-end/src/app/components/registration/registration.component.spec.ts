@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RegistrationComponent } from './registration.component';
 import { DebugElement } from '@angular/core';
-import { By } from '@angular/platform-browser';
 import { FormControl } from '@angular/forms';
 
 describe('RegistrationComponent', () => {
@@ -38,7 +37,7 @@ describe('RegistrationComponent', () => {
     expect(tempControl.valid).toBeFalsy();
     tempControl.setValue('short');
     expect(tempControl.valid).toBeFalsy();
-    console.log("regUserName -> [OK]");
+    console.log("***** regUserName -> [OK]");
 
     tempControl = component.regUserPrimaryEmail;
     tempControl.setValue('test.valid@example.com');
@@ -49,7 +48,7 @@ describe('RegistrationComponent', () => {
     expect(tempControl.valid).toBeFalsy();
     tempControl.setValue('invalid-email');
     expect(tempControl.valid).toBeFalsy();
-    console.log("regUserPrimaryEmail -> [OK]");
+    console.log("***** regUserPrimaryEmail -> [OK]");
 
     tempControl.setValue('test@example.com');
     tempControl2 = component.regUserConfirmEmail;
@@ -57,7 +56,7 @@ describe('RegistrationComponent', () => {
     expect(component.formAll.controls.mails.valid).toBeTruthy();
     tempControl2.setValue('different@example.com');
     expect(component.formAll.controls.mails.valid).toBeFalsy();
-    console.log("regUserPrimaryEmail + regUserConfirmEmail -> [OK]");
+    console.log("***** regUserPrimaryEmail + regUserConfirmEmail -> [OK]");
 
     tempControl = component.regUserMobile;
     tempControl.setValue('1234567890');
@@ -66,7 +65,7 @@ describe('RegistrationComponent', () => {
     expect(tempControl.valid).toBeFalsy();
     tempControl.setValue('invalid');
     expect(tempControl.valid).toBeFalsy();
-    console.log("regUserMobile -> [OK]");
+    console.log("***** regUserMobile -> [OK]");
 
     tempControl = component.regUserPrimaryPassword;
     tempControl.setValue('password123');
@@ -75,7 +74,7 @@ describe('RegistrationComponent', () => {
     expect(tempControl.valid).toBeFalsy();
     tempControl.setValue('short');
     expect(tempControl.valid).toBeFalsy();
-    console.log("regUserPrimaryPassword -> [OK]");
+    console.log("***** regUserPrimaryPassword -> [OK]");
 
     tempControl.setValue('password123');
     tempControl2 = component.regUserConfirmPassword;
@@ -83,126 +82,133 @@ describe('RegistrationComponent', () => {
     expect(component.formAll.controls.pass.valid).toBeTruthy();
     tempControl2.setValue('different-password');
     expect(component.formAll.controls.pass.valid).toBeFalsy();
-    console.log("regUserPrimaryPassword + regUserConfirmPassword -> [OK]");
+    console.log("***** regUserPrimaryPassword + regUserConfirmPassword -> [OK]");
 
     tempControl = component.regUserAgree;
     tempControl.setValue(true);
     expect(tempControl.valid).toBeTruthy();
     tempControl.setValue(false);
     expect(tempControl.valid).toBeFalsy();
-    console.log("regUserAgree -> [OK]");
+    console.log("***** regUserAgree -> [OK]");
   });
 
+  function htmlTest(inputElement: any, testValue: string, idTest: string){
+    inputElement.value = testValue;
+    inputElement.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    return fixture.nativeElement.querySelector(idTest);
+  }
 
   let check3 = '[RegistrationComponent] HTML Error test';
   it(check3, () => {
+    console.log(check3 + ":");
+
+    //These are manadatory for alert view
+    component.regUserName.markAsTouched();
+    component.regUserPrimaryEmail.markAsTouched();
+    component.regUserConfirmEmail.markAsTouched();
+    component.regUserMobile.markAsTouched();
+    component.regUserPrimaryPassword.markAsTouched();
+    component.regUserConfirmPassword.markAsTouched();
+    component.regUserAgree.setValue(true);
+
+    let currentAlert: HTMLElement;
 
 
+//userNameInput
+    const userNameInput = fixture.nativeElement.querySelector('#userName');
+
+    currentAlert = htmlTest(userNameInput, '', '#userNameAlert')    //required
+    expect(currentAlert.textContent).toContain('Obbligatorio!');
+
+    currentAlert = htmlTest(userNameInput, 'short', '#userNameAlert')    //minlength
+    expect(currentAlert.textContent).toContain('Lunghezza minima 8 caratteri!');
+
+    currentAlert = htmlTest(userNameInput, 'longEnoughUsername', '#userNameAlert')    // ok value
+    expect(currentAlert).toBeNull();
+    console.log("***** userName -> [OK]");
 
 
-//VOLEVO UN CONTROLLO DEL MESSAGGIO DI ERRORE COME QUESTO NON COME QUELLO SOTTO
+//userNameInput
+    const mailInput = fixture.nativeElement.querySelector('#mail');
 
-    it('should display error messages for invalid user name input', () => {
-      const userNameInput = element(by.id('userName'));
-      userNameInput.sendKeys('short'); // Input non valido
+    currentAlert = htmlTest(mailInput, '', '#mailAlert')    //required
+    expect(currentAlert.textContent).toContain('Obbligatorio!');
+
+    currentAlert = htmlTest(mailInput, 'short', '#mailAlert')    //minlength
+    expect(currentAlert.textContent).toContain('Lunghezza minima 6 caratteri!');
+
+    currentAlert = htmlTest(mailInput, 'm.c@sss', '#mailAlert')    //pattern
+    expect(currentAlert.textContent).toContain('Email non conforme!');
+
+    currentAlert = htmlTest(mailInput, 'first@mail.com', '#mailAlert')    //ok value
+    expect(currentAlert).toBeNull();
+    console.log("***** mail -> [OK]");
     
-      const errorMessage = element(by.css('.alert-danger'));
-      expect(errorMessage.getText()).toContain('Lunghezza minima 8 caratteri');
-    });
+
+//mail2Input
+    const mail2Input = fixture.nativeElement.querySelector('#mail2');
+
+    currentAlert = htmlTest(mail2Input, '', '#mail2Alert')    //required
+    expect(currentAlert.textContent).toContain('Obbligatorio!');
+
+    currentAlert = htmlTest(mail2Input, 'short', '#mail2Alert')    //minlength
+    expect(currentAlert.textContent).toContain('Lunghezza minima 6 caratteri!');
+
+    currentAlert = htmlTest(mail2Input, 'm.c@sss', '#mail2Alert')    //pattern
+    expect(currentAlert.textContent).toContain('Email non conforme!');
+
+    currentAlert = htmlTest(mail2Input, 'different@mail.com', '#mail2Alert')    //matchMailError
+    expect(currentAlert.textContent).toContain('Email non confermata!');
+
+    currentAlert = htmlTest(mail2Input, 'first@mail.com', '#mail2Alert')    //ok value
+    expect(currentAlert).toBeNull();
+    console.log("***** mail2 -> [OK]");
+
     
-    it('should display error messages for invalid email input', () => {
-      const emailInput = element(by.id('mail'));
-      emailInput.sendKeys('invalidemail'); // Input non valido
+//mobilePhone
+    const mobileInput = fixture.nativeElement.querySelector('#mobilePhone');
+
+    currentAlert = htmlTest(mobileInput, '', '#mobilePhoneAlert')    //required
+    expect(currentAlert.textContent).toContain('Obbligatorio!');
+
+    currentAlert = htmlTest(mobileInput, '123456A6789', '#mobilePhoneAlert')    //pattern
+    expect(currentAlert.textContent).toContain('Cellulare non conforme!');
+
+    currentAlert = htmlTest(mobileInput, '1234567890', '#mobilePhoneAlert')    //ok value
+    expect(currentAlert).toBeNull();
+    console.log("***** mobilePhone -> [OK]");
+
+
+//passInput
+    const passInput = fixture.nativeElement.querySelector('#pass');
+
+    currentAlert = htmlTest(passInput, '', '#passAlert')    //required
+    expect(currentAlert.textContent).toContain('Obbligatorio!');
+
+    currentAlert = htmlTest(passInput, 'short88', '#passAlert')    //minlength
+    expect(currentAlert.textContent).toContain('Lunghezza minima 8 caratteri!');
+
+    currentAlert = htmlTest(passInput, 'Pa$5word', '#passAlert')    //ok value
+    expect(currentAlert).toBeNull();
+    console.log("***** pass -> [OK]");
+
+
+//passCheckInput
+    const passCheckInput = fixture.nativeElement.querySelector('#passCheck');
+
+    currentAlert = htmlTest(passCheckInput, '', '#passCheckAlert')    //required
+    expect(currentAlert.textContent).toContain('Obbligatorio!');
+
+    currentAlert = htmlTest(passCheckInput, 'short88', '#passCheckAlert')    //minlength
+    expect(currentAlert.textContent).toContain('Lunghezza minima 8 caratteri!');
     
-      const errorMessage = element(by.css('.alert-danger'));
-      expect(errorMessage.getText()).toContain('Email non conforme');
-    });
+    currentAlert = htmlTest(passCheckInput, 'Different', '#passCheckAlert')    //matchPasswordError
+    expect(currentAlert.textContent).toContain('Password non corrisponde!');
 
+    currentAlert = htmlTest(passCheckInput, 'Pa$5word', '#passCheckAlert')    //ok value
+    expect(currentAlert).toBeNull();
+    console.log("***** passCheck -> [OK]");
 
-
-
-
-
-
-
-
-
-
-
-//QUESTO TESTA LA VALIDITA? MA L?HO TESTATA SOPRA
-
-
-
-
-  const userNameControl = component.formAll.get('name') as FormControl;
-  expect(userNameControl.valid).toBeFalsy();
-
-  userNameControl.setValue('short'); // Test with short length
-  expect(userNameControl.errors?.minlength).toBeTruthy();
-
-  userNameControl.setValue('longEnoughUsername'); // Test with valid length
-  expect(userNameControl.valid).toBeTruthy();
-});
-
-it('should test email validation', () => {
-  const mail1Control = component.formAll.get('mails.mail1') as FormControl;
-  expect(mail1Control.valid).toBeFalsy();
-
-  mail1Control.setValue('invalidemail'); // Test with invalid email
-  expect(mail1Control.errors?.email).toBeTruthy();
-
-  mail1Control.setValue('valid@mail.com'); // Test with valid email
-  expect(mail1Control.valid).toBeTruthy();
-});
-
-it('should test matching emails validation', () => {
-  const mail2Control = component.formAll.get('mails.mail2') as FormControl;
-  expect(mail2Control.valid).toBeFalsy();
-
-  mail2Control.setValue('invalidemail'); // Test with different email
-  expect(mail2Control.errors?.matchMailError).toBeTruthy();
-
-  mail2Control.setValue('valid@mail.com'); // Test with matching email
-  expect(mail2Control.valid).toBeTruthy();
-});
-
-it('should test mobile number validation', () => {
-  const mobileControl = component.formAll.get('mobile') as FormControl;
-  expect(mobileControl.valid).toBeFalsy();
-
-  mobileControl.setValue('invalidnumber'); // Test with invalid mobile number
-  expect(mobileControl.errors?.pattern).toBeTruthy();
-
-  mobileControl.setValue('1234567890'); // Test with valid mobile number
-  expect(mobileControl.valid).toBeTruthy();
-});
-
-it('should test password validation', () => {
-  const pass1Control = component.formAll.get('pass.pass1') as FormControl;
-  expect(pass1Control.valid).toBeFalsy();
-
-  pass1Control.setValue('short'); // Test with short password
-  expect(pass1Control.errors?.minlength).toBeTruthy();
-
-  pass1Control.setValue('longEnoughPassword'); // Test with valid password
-  expect(pass1Control.valid).toBeTruthy();
-});
-
-it('should test matching passwords validation', () => {
-  const pass2Control = component.formAll.get('pass.pass2') as FormControl;
-  expect(pass2Control.valid).toBeFalsy();
-
-  pass2Control.setValue('differentPassword'); // Test with different password
-  expect(pass2Control.errors?.matchPasswordError).toBeTruthy();
-
-  pass2Control.setValue('matchingPassword'); // Test with matching password
-  expect(pass2Control.valid).toBeTruthy();
-});
-
-
-
-
-
-
-
+  });
 });
