@@ -3,6 +3,10 @@ import { Component } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+
 @Component({
   standalone: true,
   selector: 'app-registration',
@@ -13,6 +17,8 @@ import { Validators } from '@angular/forms';
 })
 
 export class RegistrationComponent {
+
+  constructor(private http: HttpClient) {}
 
 //https://angular.io/guide/form-validation#built-in-validator-functions
 
@@ -61,8 +67,39 @@ export class RegistrationComponent {
   onSubmit(){
     if (this.formAll.errors != null){
       console.warn("Errors:", this.formAll.errors);
+    }else{
+//    console.log(this.formAll.value);
+      console.log("Sending data validated...");
+
+      const formDataJSON = {
+        name: this.formAll.get('name')?.value,
+        primaryEmail: this.formAll.get('mails.mail1')?.value,
+        mobile: this.formAll.get('mobile')?.value,
+        primaryPassword: this.formAll.get('pass.pass1')?.value
+      };
+      
+      const url = 'http://localhost:8081/registration';   //TODO update url backend side
+      const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+      this.http.post(url, formDataJSON, { headers })
+        .pipe(
+          catchError((error) => {
+            console.error('Registration ERROR:\n', error);
+
+
+//TODO aggiungere DIV per visualizzare l'errore al momento del salvataggio
+
+
+            return throwError(() => new Error(error));
+          })
+        )
+        .subscribe((response) => {
+          console.log('Registration COMPLETED:\n', response);
+          // TODO REDIRECT
+      });
     }
 
+//Errors report
     if (this.regUserName.errors != null){
       console.warn("User:", this.regUserName.errors);
     }
@@ -86,8 +123,6 @@ export class RegistrationComponent {
     if (this.regUserAgree.errors != null){
       console.warn("Agree:", this.regUserAgree.errors);
     }
-
-    console.log(this.formAll.value);
   }
 }
 

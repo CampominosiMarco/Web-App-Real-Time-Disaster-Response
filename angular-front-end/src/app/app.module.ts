@@ -22,7 +22,7 @@ import { TermsConditionsComponent } from './components/terms-conditions/terms-co
 import{LogoCompleteComponent} from './components/logo-complete/logo-complete.component';
 import { HomeComponent } from './home/home.component';
 import { Logo512Component } from './components/logo-512/logo-512.component';
-
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -48,6 +48,7 @@ import { Logo512Component } from './components/logo-512/logo-512.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     RegistrationComponent,        //Questo viene importato perchè è STANDALONE ed ha ReactiveFormsModule all'interno
   //  ReactiveFormsModule,
     FormsModule         //Serve per il binding
