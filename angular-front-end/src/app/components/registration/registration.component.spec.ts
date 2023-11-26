@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RegistrationComponent } from './registration.component';
 import { DebugElement } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('RegistrationComponent', () => {
   let component: RegistrationComponent;
@@ -12,7 +13,7 @@ describe('RegistrationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RegistrationComponent]
+      imports: [RegistrationComponent, HttpClientModule]
     });
     fixture = TestBed.createComponent(RegistrationComponent);
     component = fixture.componentInstance;
@@ -210,5 +211,29 @@ describe('RegistrationComponent', () => {
     expect(currentAlert).toBeNull();
     console.log("***** passCheck -> [OK]");
 
+  });
+
+  let check4 = '[RegistrationComponent] Server Alert test';
+  it(check4, () => {
+
+    let currentAlert: HTMLElement;
+
+    component.regUserAlert = '';
+    fixture.detectChanges();
+    currentAlert = fixture.nativeElement.querySelector('#serveralert');
+    expect(currentAlert).toBeNull();
+
+    component.regUserAlert = 'AlertTest';
+    fixture.detectChanges();
+    currentAlert = fixture.nativeElement.querySelector('#serveralert');
+    expect(currentAlert.textContent).toContain('AlertTest');
+
+    const inputElement = fixture.nativeElement.querySelector('#userName');
+    inputElement.dispatchEvent(new Event('focus'));
+    fixture.detectChanges();
+    currentAlert = fixture.nativeElement.querySelector('#serveralert');
+    expect(currentAlert).toBeNull();
+
+    console.log(check4 + " -> [OK]");
   });
 });

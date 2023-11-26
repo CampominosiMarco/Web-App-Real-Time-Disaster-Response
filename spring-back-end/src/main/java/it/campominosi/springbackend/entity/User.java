@@ -1,4 +1,4 @@
-package it.campominosi.springbackend.registration.entity;
+package it.campominosi.springbackend.entity;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

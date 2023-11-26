@@ -18,7 +18,8 @@
                       <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                       <div class="form-outline flex-fill mb-0">
                         <label class="form-label" for="userName">Nome Utente</label>
-                        <input title="Utente: lunghezza minima 8 caratteri." type="text" id="userName" class= "form-control" [formControl]="regUserName" formControlName="name" required/> <!--  Validation [[formControl]="regUserName" formControlName="name"]  -->
+                        <input title="Utente: lunghezza minima 8 caratteri." type="text" id="userName" class= "form-control"
+                            [formControl]="regUserName" formControlName="name" required (focus)="resetAttribute()"/> <!--  Validation [[formControl]="regUserName" formControlName="name"]  -->
                       
                         <div *ngIf ="regUserName.touched && regUserName.invalid && regUserAgree.value" class="alert alert-danger" id="userNameAlert"
                           style="margin-top: 5px; padding: 5px; font-weight: bold; color: white; background-color: red;">
@@ -39,7 +40,7 @@
                         <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                         <div class="form-outline flex-fill mb-0">
                           <label class="form-label" for="mail">Mail</label>
-                          <input type="email" id="mail" class= "form-control" [formControl]="regUserPrimaryEmail" formControlName="mail1" required/>
+                          <input type="email" id="mail" class= "form-control" [formControl]="regUserPrimaryEmail" formControlName="mail1" required (focus)="resetAttribute()"/>
                       
                           <div *ngIf ="regUserPrimaryEmail.touched && regUserPrimaryEmail.invalid && regUserAgree.value" class="alert alert-danger" id="mailAlert"
                             style="margin-top: 5px; padding: 5px; font-weight: bold; color: white; background-color: red;">
@@ -101,7 +102,8 @@
                         <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                         <div class="form-outline flex-fill mb-0">
                           <label class="form-label" for="pass">Password</label>
-                          <input title="Password: lunghezza minima 8 caratteri." type="password" id="pass" class= "form-control" [formControl]="regUserPrimaryPassword" formControlName="pass1" required/>
+                          <input title="Password: lunghezza minima 8 caratteri." type="password" id="pass" class= "form-control"
+                            [formControl]="regUserPrimaryPassword" formControlName="pass1" required/>
                       
                           <div *ngIf ="regUserPrimaryPassword.touched && regUserPrimaryPassword.invalid && regUserAgree.value" class="alert alert-danger" id="passAlert"
                             style="margin-top: 5px; padding: 5px; font-weight: bold; color: white; background-color: red;">
@@ -133,13 +135,19 @@
                       </div>
                     </div>
 
+<!--  SERVER ALERT  -->
+                    
+                    <div *ngIf="regUserAlert !== null && regUserAlert !== ''" id="serveralert" class="alert alert-danger" style = "color: red; text-align: center; margin: 10px; font-weight: bold;">
+                      {{ regUserAlert }}
+                    </div>
+
 <!--  AGREE  -->
 
                     <div class="form-check d-flex justify-content-center mb-5 form-group">
                       <input class="form-check-input me-2" type="checkbox" value="" id="checkBoxAgree" [formControl]="regUserAgree" formControlName="agree" required/>
-                      <label class="form-check-label" for="checkBoxAgree">Accetto i <a href="#"  routerLink="/conditions" routerLinkActive="active">Termini del Servizio</a></label>
+                      <label class="form-check-label" for="checkBoxAgree">Accetto i <a href="/conditions">Termini del Servizio</a></label>
                     </div>
-  
+
 <!--  BUTTON  -->
                     
                     <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">

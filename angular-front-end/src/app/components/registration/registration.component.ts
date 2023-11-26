@@ -2,10 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { Validators } from '@angular/forms';
+import { HashPasswordService } from 'src/app/hash-password.service';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+
+import { Router } from '@angular/router';
+
 
 @Component({
   standalone: true,
@@ -18,7 +22,11 @@ import { throwError } from 'rxjs';
 
 export class RegistrationComponent {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,
+              private router: Router,
+              private hashPasswordService: HashPasswordService) {}
+
+  regUserAlert = '';
 
 //https://angular.io/guide/form-validation#built-in-validator-functions
 
@@ -63,8 +71,11 @@ export class RegistrationComponent {
     agree: this.regUserAgree
   });
 
+  resetAttribute(){
+    this.regUserAlert = '';
+  }
 
-  onSubmit(){
+  async onSubmit(){
     if (this.formAll.errors != null){
       console.warn("Errors:", this.formAll.errors);
     }else{
@@ -75,27 +86,28 @@ export class RegistrationComponent {
         name: this.formAll.get('name')?.value,
         primaryEmail: this.formAll.get('mails.mail1')?.value,
         mobile: this.formAll.get('mobile')?.value,
-        primaryPassword: this.formAll.get('pass.pass1')?.value
+        primaryPassword: await this.hashPasswordService.hashPassword(this.formAll.get('pass.pass1')?.value + '')
       };
       
-      const url = 'http://localhost:8081/registration';   //TODO update url backend side
+      const url = 'http://localhost:8081/registration';   //TODO: update url backend side
       const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
       this.http.post(url, formDataJSON, { headers })
         .pipe(
-          catchError((error) => {
-            console.error('Registration ERROR:\n', error);
-
-
-//TODO aggiungere DIV per visualizzare l'errore al momento del salvataggio
-
-
-            return throwError(() => new Error(error));
+          catchError((response) => {
+            this.regUserAlert = response;
+            if (response && response.message) {
+              this.regUserAlert = response.message;
+            }
+            if (response && response.error && response.error.error) {
+              this.regUserAlert = response.error.error.split(" for key ")[0];
+            }
+            return throwError(() => new Error(this.regUserAlert));
           })
         )
         .subscribe((response) => {
           console.log('Registration COMPLETED:\n', response);
-          // TODO REDIRECT
+          this.router.navigate(['/conditions']);   // TODO: update url del redirect
       });
     }
 

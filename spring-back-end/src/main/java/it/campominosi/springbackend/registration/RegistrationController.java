@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import it.campominosi.springbackend.registration.entity.User;
-import it.campominosi.springbackend.registration.repository.UserRepository;
+import it.campominosi.springbackend.entity.User;
+import it.campominosi.springbackend.repository.UserRepository;
 
 @RestController
 @RequestMapping("/registration")
@@ -60,7 +60,9 @@ public class RegistrationController {
             Throwable rootCause = e1.getRootCause();
             if (rootCause instanceof SQLException) {
                 SQLException sqlException = (SQLException) e1.getRootCause();
-                errorMessageSQL = sqlException.getMessage();
+                if (sqlException != null){
+                    errorMessageSQL = sqlException.getMessage();
+                }
             }
 
             response.put("status", "ERROR");

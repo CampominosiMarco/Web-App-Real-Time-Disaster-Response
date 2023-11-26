@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms'; //Serve per il Two-way binding del
 //Fondamentale chiamare la classe dentro il componente
 import { FormComponentComponent } from './form-component/form-component.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './components/login/login.component';
 import { IntroComponent } from './intro/intro.component';
 import { CoursesComponent } from './courses/courses.component';
 import { FooterComponent } from './components/footer/footer.component';
