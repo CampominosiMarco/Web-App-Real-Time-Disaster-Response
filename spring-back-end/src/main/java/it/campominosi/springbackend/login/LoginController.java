@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
+import at.favre.lib.crypto.bcrypt.BCrypt.Verifyer;
 import it.campominosi.springbackend.entity.User;
 import it.campominosi.springbackend.repository.UserRepository;
 
@@ -35,30 +37,42 @@ public class LoginController {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            User userData = objectMapper.readValue(requestBody, User.class);
+            User userDataFromRequestBody = objectMapper.readValue(requestBody, User.class);
             System.out.println("****************************    Object Mapper     ****************************");
             //System.out.println(userData);
 
-            Optional<User> userOptional = userRepository.findByName(userData.getName());
+            Optional<User> dbUserOptional = userRepository.findByName(userDataFromRequestBody.getName());
 
-            if (userOptional.isPresent()) {
-                response.put("status", "OK");
-                response.put("user", userOptional);
-                return new ResponseEntity<>(response, HttpStatus.OK);
+            if (dbUserOptional.isPresent()) {
 
+                User user = dbUserOptional.get();
+                String hashedPasswordFromDB = user.getPassword();
 
+                Verifyer verifyer = BCrypt.verifyer();
+                BCrypt.Result isMatch = verifyer.verify(userDataFromRequestBody.getPassword().getBytes(), hashedPasswordFromDB.getBytes());
 
-//TODO Manca da verificare la password con l'encryprion di angular
-
+                if (isMatch.verified) {
+              //      response.put("status", "OK");
+                    response.put("user_id", user.getId());
+                    response.put("user_name", user.getName());
+                    System.out.println("Access for user: " + response.get("user_id"));
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                } else {
+            //        response.put("status", "KO");
+                    response.put("error", "Invalid credentials!");
+                    System.out.println(response.get("error"));
+                    return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+                }
 
             } else {
-                response.put("status", "KO");
+             //   response.put("status", "KO");
                 response.put("error", "User not found!");
+                System.out.println(response.get("error"));
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
             System.err.println("****************************    User Mapper Exception     ****************************\n" + e);
-            response.put("status", "User Mapper Exception");
+        //    response.put("status", "User Mapper Exception");
             response.put("error", e);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }

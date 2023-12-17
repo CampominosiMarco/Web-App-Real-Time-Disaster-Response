@@ -107,7 +107,7 @@ export class RegistrationComponent {
         )
         .subscribe((response) => {
           console.log('Registration COMPLETED:\n', response);
-          this.router.navigate(['/conditions']);   // TODO: update url del redirect
+          this.router.navigate(['/login']);
       });
     }
 

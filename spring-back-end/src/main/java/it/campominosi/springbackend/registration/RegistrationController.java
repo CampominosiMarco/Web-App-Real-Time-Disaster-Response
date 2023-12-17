@@ -49,8 +49,8 @@ public class RegistrationController {
             User savedUser = userRepository.save(userData);
             System.out.println("****************************    Registration COMPLETED: " + savedUser.getId() + "     ****************************");
 
-            response.put("status", "OK");
-            response.put("userId", savedUser.getId());
+            //response.put("status", "OK");
+            response.put("user_id", savedUser.getId());
             return new ResponseEntity<>(response, HttpStatus.OK);
 
         } catch (DataIntegrityViolationException e1) {
@@ -65,14 +65,14 @@ public class RegistrationController {
                 }
             }
 
-            response.put("status", "ERROR");
+            //response.put("status", "ERROR");
             response.put("error", errorMessageSQL);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             
         } catch (Exception e2) {
             System.err.println("****************************    Registration FAILED:     ****************************\n" + e2);
             
-            response.put("status", "ERROR");
+            //response.put("status", "ERROR");
             response.put("error", e2);
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }

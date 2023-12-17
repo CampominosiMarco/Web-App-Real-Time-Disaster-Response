@@ -25,7 +25,7 @@ export class LoginComponent {
 
       console.log("Sending data...");
 
-      const url = 'http://localhost:8081/login';
+      const url = 'http://localhost:8081/login';      //TODO aggiornare url
       //const hashedPassword = await this.hashPasswordService.hashPassword(this.logPassword);
 
       const dataToSendJSON = {
