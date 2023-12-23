@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findByName(String name);     //TODO verifcare l'esattezza e Quindi anche le maiuscole
+    Optional<User> findByName(String name);
 
     List<User> findByEmail(String email);
 

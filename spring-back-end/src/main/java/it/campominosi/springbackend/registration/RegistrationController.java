@@ -47,7 +47,7 @@ public class RegistrationController {
         System.out.println("****************************    Saving in Database...     ****************************");
         try {
             User savedUser = userRepository.save(userData);
-            System.out.println("****************************    Registration COMPLETED: " + savedUser.getId() + "     ****************************");
+            System.out.println("****************************    Registration COMPLETED: new user ID" + savedUser.getId() + "     ****************************");
 
             //response.put("status", "OK");
             response.put("user_id", savedUser.getId());

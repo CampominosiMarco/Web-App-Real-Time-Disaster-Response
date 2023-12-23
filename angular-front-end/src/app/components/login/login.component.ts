@@ -26,23 +26,17 @@ export class LoginComponent {
       console.log("Sending data...");
 
       const url = 'http://localhost:8081/login';      //TODO aggiornare url
-      //const hashedPassword = await this.hashPasswordService.hashPassword(this.logPassword);
 
       const dataToSendJSON = {
         name: this.logUser,
         password: this.logPassword
       };
 
-      console.log(dataToSendJSON);
-
       const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
       this.http.post(url, dataToSendJSON, { headers })
         .pipe(
           catchError((response) => {
-
-            console.log('Login FAILED:\n', response);
-
 
             this.logUserAlert = response;
             if (response && response.message) {
@@ -51,37 +45,16 @@ export class LoginComponent {
             if (response && response.error && response.error.error) {
               this.logUserAlert = response.error.error;
             }
-            return throwError(() => new Error(response));
 
-
+            return throwError(() => new Error(this.logUserAlert));
           })
         )
         .subscribe((response) => {
           console.log('Login COMPLETED:\n', response);
       });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     } else {
       this.logUserAlert = 'Inserisci username e password.';
     }
   }
-
-
 }
-
-
