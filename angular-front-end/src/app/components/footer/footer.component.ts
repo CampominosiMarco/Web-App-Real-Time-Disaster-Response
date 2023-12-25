@@ -6,6 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./footer.component.css']
 })
 export class FooterComponent {
-  lastUpdateDate: string = '09/11/2023';
+  lastUpdateDate: string = '24/12/2023';
   copyrightDate: string = "2023";
 }

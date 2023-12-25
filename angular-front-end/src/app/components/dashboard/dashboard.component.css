@@ -1,0 +1,34 @@
+.container {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .menu {
+    width: 25%; /* Larghezza del menu */
+    background-color: #f0f0f0; /* Colore di sfondo del menu */
+    padding: 20px;
+  }
+  
+  .menu ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .menu li {
+    margin-bottom: 10px;
+  }
+  
+  .map {
+    width: 75%; /* Larghezza della mappa */
+  }
+  
+  /* Stile per la mappa (esempio di altezza fisssa) */
+  #map {
+    height: 500px;
+    /* Aggiungi stili extra per la mappa, se necessario */
+  }
+
+
+
+
+

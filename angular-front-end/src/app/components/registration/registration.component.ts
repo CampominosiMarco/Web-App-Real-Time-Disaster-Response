@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { Validators } from '@angular/forms';
-import { HashPasswordService } from 'src/app/hash-password.service';
+import { HashPasswordService } from 'src/app/services/hash-password.service';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
