@@ -66,23 +66,7 @@ Please read these documentation to install google-maps (`npm i @angular/google-m
 
 ### Database
 In this example I used an SQL database as you can see in [db folder](/db)
-### Studio su ER
-
-
-Repo + controller necessari
-
-
-
-
-
-
-
 
 ### Spring Framework
 As explained in [Visual Studio Code Spring Documentation](https://code.visualstudio.com/docs/java/java-spring-boot), I developed a basic backend code to manage user information storage and seamlessly respond to requests from the Angular frontend.<br>
-This is a very simple example with only Entity, Controller and Repository needed.<br>
-In this Project the backend code is 
-
-
-
-
+This example comprises only the essential Entities, Controllers, and Repositories. Therefore, I'll not delving into details.<br>
