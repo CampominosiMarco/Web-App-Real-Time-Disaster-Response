@@ -16,6 +16,7 @@ import { HomeComponent } from './components/home/home.component';
 import { Logo512Component } from './components/logo-512/logo-512.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,9 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     AppRoutingModule,
     HttpClientModule,
     RegistrationComponent,        //Questo viene importato perchè è STANDALONE ed ha ReactiveFormsModule all'interno
-    FormsModule         //Serve per il binding
+    FormsModule,         //Serve per il binding
+    GoogleMapsModule,
+    
   ],
   providers: [],
   bootstrap: [AppComponent]
