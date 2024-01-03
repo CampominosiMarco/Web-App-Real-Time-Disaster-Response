@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ToggleSearchComponent } from './toggle-search/toggle-search.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -6,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+
+  //This is necessary to get methods and attributes from child
+  @ViewChild(ToggleSearchComponent) toggleSearchComponent!: ToggleSearchComponent;
 
   map: google.maps.Map | null = null;
 
@@ -73,7 +77,8 @@ export class DashboardComponent implements OnInit {
   }
 
 
-
+all'avvio visualizzare tutto
+impostare DB
 
   addMarker(latLng: google.maps.LatLngLiteral, title: string): void {
     if (this.map) {
@@ -112,4 +117,12 @@ export class DashboardComponent implements OnInit {
 
   }
 
+
+
+
+    
+//This is methods called from child. See also EventEmitter in child and listener in HTML
+  onToggleSearchEvent() {
+    console.log('Evento ricevuto dal ToggleSearchComponent: ' + this.toggleSearchComponent.getDescription() + ' ' + this.toggleSearchComponent.getValue());
+  }
 }

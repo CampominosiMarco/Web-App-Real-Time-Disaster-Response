@@ -1,0 +1,17 @@
+<div class="container">
+
+    <h3>{{ toggleValue ? 'Offerte' : 'Richieste'}}</h3>
+
+    <div class="search-group">
+
+        <label class="toggle">
+            <input type="checkbox" [(ngModel)]="toggleValue" (click)="toggleMode()">
+            <span class="slider"></span>
+        </label>
+
+        <input type="text" placeholder="Inserisci la descrizione" [(ngModel)]="description">
+
+        <button type="submit" class="btn btn-primary" (click)="toggleSearch()">Cerca</button>
+    </div>
+
+</div>

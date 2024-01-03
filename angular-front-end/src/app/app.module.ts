@@ -17,6 +17,7 @@ import { Logo512Component } from './components/logo-512/logo-512.component';
 import { HttpClientModule } from '@angular/common/http';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { ToggleSearchComponent } from './components/dashboard/toggle-search/toggle-search.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { GoogleMapsModule } from '@angular/google-maps';
     LogoCompleteComponent,
     HomeComponent,
     Logo512Component,
-    DashboardComponent
+    DashboardComponent,
+    ToggleSearchComponent
   ],
   imports: [
     BrowserModule,
