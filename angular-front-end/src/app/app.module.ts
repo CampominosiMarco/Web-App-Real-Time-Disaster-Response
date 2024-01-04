@@ -30,7 +30,8 @@ import { ToggleSearchComponent } from './components/dashboard/toggle-search/togg
     HomeComponent,
     Logo512Component,
     DashboardComponent,
-    ToggleSearchComponent
+    ToggleSearchComponent,
+
   ],
   imports: [
     BrowserModule,

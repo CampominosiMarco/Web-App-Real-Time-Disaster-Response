@@ -16,7 +16,7 @@ const routes: Routes = [
   {path: 'registration', component: RegistrationComponent},
   {path: 'login', component: LoginComponent},
   {path: 'conditions', component: TermsConditionsComponent},
-  {path: 'map', component: DashboardComponent}
+  {path: 'dashboard', component: DashboardComponent}
 ];
 
 @NgModule({

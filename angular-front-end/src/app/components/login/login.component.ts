@@ -3,6 +3,8 @@ import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +16,7 @@ export class LoginComponent {
   logPassword: string = '';
   logUserAlert: string = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService, private router: Router) {}
 
   resetAttribute(){
     this.logUserAlert = '';
@@ -22,8 +24,6 @@ export class LoginComponent {
 
   onSubmit(){
     if (this.logUser && this.logPassword) {
-
-      console.log("Sending data...");
 
       const url = 'http://localhost:8081/login';      //TODO aggiornare url
 
@@ -46,15 +46,20 @@ export class LoginComponent {
               this.logUserAlert = response.error.error;
             }
 
+            this.authService.logout();
             return throwError(() => new Error(this.logUserAlert));
           })
         )
-        .subscribe((response) => {
+        .subscribe((response: any) => {
           console.log('Login COMPLETED:\n', response);
+
+          this.authService.login(response.user_id, response.user_name);
+          this.router.navigate(['/dashboard']);
       });
 
     } else {
       this.logUserAlert = 'Inserisci username e password.';
+      this.authService.logout();
     }
   }
 }

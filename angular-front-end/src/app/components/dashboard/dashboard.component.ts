@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ToggleSearchComponent } from './toggle-search/toggle-search.component';
+import { AuthService } from 'src/app/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,8 +26,12 @@ export class DashboardComponent implements OnInit {
     lng: this.center.lng
   };
 
-  constructor() {
-    this.initMap();
+  constructor(private authService: AuthService, private router: Router) {
+    if (!this.authService.isLoggedIn()){
+      this.router.navigate(['/login']);
+    }else{
+      this.initMap();
+    }
   }
 
   async initMap(): Promise<void> {
@@ -67,7 +73,7 @@ export class DashboardComponent implements OnInit {
       lat: this.center.lat,
       lng: this.center.lng
     };
-    this.addMarker(markerPosition, 'Piazza di Quarrata\nCampominosi');
+    this.addMarker(markerPosition, 'Piazza di Quarrata\n' +  + this.authService.getUserId() + '\n' + this.authService.getUserName() + '\n' + this.authService.isAdmin());
 
 
 
@@ -76,10 +82,10 @@ export class DashboardComponent implements OnInit {
 
   }
 
-
+/* TODO
 all'avvio visualizzare tutto
 impostare DB
-
+*/
   addMarker(latLng: google.maps.LatLngLiteral, title: string): void {
     if (this.map) {
       new google.maps.Marker({
@@ -87,7 +93,7 @@ impostare DB
         map: this.map,
         title: title,
         icon: {
-          url: 'assets/green_point.png',
+          url: 'assets/blue_point.png',
           scaledSize: new google.maps.Size(33, 50),
         },
         /*label: {
