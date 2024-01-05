@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ToggleSearchComponent } from './toggle-search/toggle-search.component';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -26,13 +28,24 @@ export class DashboardComponent implements OnInit {
     lng: this.center.lng
   };
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(private http: HttpClient, private authService: AuthService, private router: Router) {
     if (!this.authService.isLoggedIn()){
       this.router.navigate(['/login']);
     }else{
       this.initMap();
     }
   }
+
+  ngOnInit(): void {
+
+  }
+
+
+
+
+
+
+
 
   async initMap(): Promise<void> {
     const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
@@ -55,7 +68,14 @@ export class DashboardComponent implements OnInit {
       const latLng = event.latLng;
 
       if (latLng != null) {
-        this.showMarkerPopup(latLng);
+    //    this.showMarkerPopup(latLng);
+
+
+
+
+        this.saveMarker(true, 'PASTA\nACQUA\nIDROVORA', 'Y', latLng);
+
+        this.addMarkerOnMap(true, 'PASTA\nACQUA\nIDROVORA', 'Y', latLng);
       }
     });
 
@@ -67,15 +87,15 @@ export class DashboardComponent implements OnInit {
 
 
 
-
+/*
 
     const markerPosition = {
       lat: this.center.lat,
       lng: this.center.lng
     };
-    this.addMarker(markerPosition, 'Piazza di Quarrata\n' +  + this.authService.getUserId() + '\n' + this.authService.getUserName() + '\n' + this.authService.isAdmin());
+    this.addMarkerOnMap(markerPosition, 'Piazza di Quarrata\n' +  + this.authService.getUserId() + '\n' + this.authService.getUserName() + '\n' + this.authService.isAdmin());
 
-
+*/
 
 
 
@@ -86,14 +106,29 @@ export class DashboardComponent implements OnInit {
 all'avvio visualizzare tutto
 impostare DB
 */
-  addMarker(latLng: google.maps.LatLngLiteral, title: string): void {
+
+
+
+
+  addMarkerOnMap(consent: boolean, description: string, icon: string, latLng: google.maps.LatLng): void {
     if (this.map) {
+
+
+      let my_title = this.authService.getUserName() + 
+                      consent +
+                      "-----" +
+                      description;
+  
+
+
+
+
       new google.maps.Marker({
-        position: latLng,
+        position: this.latLngConvertion(latLng),
         map: this.map,
-        title: title,
+        title: my_title,
         icon: {
-          url: 'assets/blue_point.png',
+          url: this.iconLetterToLink(icon),
           scaledSize: new google.maps.Size(33, 50),
         },
         /*label: {
@@ -103,11 +138,64 @@ impostare DB
         },*/
       });
     }
+
+
+
+
+
+
   }
 
-  showMarkerPopup(latLng: google.maps.LatLng): void {
+  
+
+  saveMarker(consent: boolean, description: string, icon: string, latLng: google.maps.LatLng){
+
+    const url = 'http://localhost:8081/markers/add';      //TODO aggiornare url
+
+    
     const markerPosition = { lat: latLng.lat(), lng: latLng.lng() };
 
+    const dataToSendJSON = {
+      user_id: this.authService.getUserId(),
+      consent: consent,
+      description: description,
+      icon: icon,
+      position: JSON.stringify(markerPosition)
+    }
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    this.http.post(url, dataToSendJSON, { headers })
+      .pipe(
+        catchError((response) => {
+
+/*
+          if (response && response.message) {
+           // this.logUserAlert = response.message;
+          }
+*/
+
+
+          return throwError(() => new Error(response));
+        })
+      )
+      .subscribe((response: any) => {
+        console.log('Marker ADD COMPLETED:\n', response);
+
+
+    });
+
+  }
+
+
+
+
+
+
+
+
+
+  showMarkerPopup(latLng: google.maps.LatLng): void {
 
 
 
@@ -115,17 +203,55 @@ impostare DB
     // In questo esempio, supponiamo un alert per semplicità
     const title = prompt('Inserisci il titolo del marker:');
     if (title) {
-      this.addMarker(markerPosition, title);
+      this.addMarkerOnMap(true, title, 'O', latLng);
     }
   }
 
-  ngOnInit(): void {
 
+
+
+
+
+
+
+
+
+  latLngConvertion(latLng: google.maps.LatLng): google.maps.LatLngLiteral{
+
+    const latLngLiteral: google.maps.LatLngLiteral = {
+      lat: latLng.lat(),
+      lng: latLng.lng(),
+    };
+
+    return latLngLiteral;
   }
 
+  iconLetterToLink(letter: string): string{
+    let link: string;
 
+    switch (letter.toUpperCase()) {
+        case 'B':
+            link = 'assets/blue_point.png';
+            break;
+        case 'R':
+            link = 'assets/red_point.png';
+            break;
+        case 'G':
+            link = 'assets/green_point.png';
+            break;
+        case 'O':
+            link = 'assets/orange_point.png';
+            break;
+        case 'Y':
+            link = 'assets/yellow_point.png';
+            break;
+        default:
+            link = 'assets/blue_point.png';
+            break;
+    }
 
-
+    return link;
+  }
     
 //This is methods called from child. See also EventEmitter in child and listener in HTML
   onToggleSearchEvent() {
