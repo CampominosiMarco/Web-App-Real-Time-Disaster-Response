@@ -18,8 +18,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { ToggleSearchComponent } from './components/dashboard/toggle-search/toggle-search.component';
+import { MarkerFormComponent } from './components/dashboard/marker-form/marker-form.component';
 
-@NgModule({
+@NgModule({ 
   declarations: [
     NavbarComponent,
     AppComponent,
@@ -31,6 +32,7 @@ import { ToggleSearchComponent } from './components/dashboard/toggle-search/togg
     Logo512Component,
     DashboardComponent,
     ToggleSearchComponent,
+    MarkerFormComponent,
 
   ],
   imports: [
@@ -40,7 +42,7 @@ import { ToggleSearchComponent } from './components/dashboard/toggle-search/togg
     RegistrationComponent,        //Questo viene importato perchè è STANDALONE ed ha ReactiveFormsModule all'interno
     FormsModule,         //Serve per il binding
     GoogleMapsModule,
-    
+
   ],
   providers: [],
   bootstrap: [AppComponent]

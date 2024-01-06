@@ -1,9 +1,16 @@
 package it.campominosi.springbackend.entity;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import it.campominosi.springbackend.classes.MarkerDataForClient;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,7 +29,7 @@ public class Marker {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private User user = null;
     private boolean consent;
     private String description;
     private String icon;
@@ -32,12 +39,10 @@ public class Marker {
 
     }
 
-    public Marker(  @JsonProperty("user_id") User user,
-                    @JsonProperty("consent") boolean consent,
+    public Marker(  @JsonProperty("consent") boolean consent,
                     @JsonProperty("description") String description,
                     @JsonProperty("icon") String icon,
                     @JsonProperty("position") String position) {
-        this.user = user;
         this.consent = consent;
         this.description = description;
         this.icon = icon;
@@ -56,8 +61,8 @@ public class Marker {
         return user;
     }
 
-    public void setUser(User user_id) {
-        this.user = user_id;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public boolean isConsent() {
@@ -135,5 +140,37 @@ public class Marker {
     @Override
     public String toString() {
         return "[" + id + "] - UserId: " + user + " - Consent: " + isConsent() + " - Icon: [" + icon + "] - Position: " + position + " - Description: " + description;
+    }
+
+    public MarkerDataForClient toMarkerData() {
+        MarkerDataForClient markerData = new MarkerDataForClient();
+        markerData.setId(this.getId());
+        markerData.setUserName(this.getUser().getName());
+        markerData.setDescription(this.getDescription());
+        markerData.setIcon(this.getIcon());
+        markerData.setPosition(parsePosition(this.getPosition()));
+
+        if (this.isConsent()) {
+            markerData.setUserMobile(this.getUser().getMobile());
+            markerData.setUserEmail(this.getUser().getEmail());
+        }
+
+        return markerData;
+    }
+
+   private Map<String, Double> parsePosition(String position) {
+        Map<String, Double> parsedPosition = new HashMap<>();
+        try {
+            JSONObject jsonObject = new JSONObject(position);
+            double lat = jsonObject.getDouble("lat");
+            double lng = jsonObject.getDouble("lng");
+
+            parsedPosition.put("lat", lat);
+            parsedPosition.put("lng", lng);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return parsedPosition;
     }
 }

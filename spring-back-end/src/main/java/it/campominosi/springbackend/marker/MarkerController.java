@@ -1,7 +1,10 @@
 package it.campominosi.springbackend.marker;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import it.campominosi.springbackend.classes.MarkerDataForClient;
 import it.campominosi.springbackend.entity.Marker;
 import it.campominosi.springbackend.entity.User;
 import it.campominosi.springbackend.repository.MarkerRepository;
@@ -29,38 +33,30 @@ public class MarkerController {
 
     @PostMapping("/add")
     public ResponseEntity<Object> addMarker(@RequestBody String requestBody) {
-        System.out.println("\n****************************    Request Received     ****************************");
-        System.out.println(requestBody);
+        System.out.println("\n****************************    ADD Request Received     ****************************");
+        //System.out.println(requestBody);
         
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> response = new HashMap<>();
 
         try {
-
-
-            // Parsing the JSON string to a Map
             Map<String, Object> requestData = objectMapper.readValue(requestBody, new TypeReference<Map<String,Object>>() {});
-            // Extracting user_id from the request body
+
             Long userId = Long.parseLong(requestData.get("user_id").toString());
-
-
-
             User user = userRepository.findById(userId).orElse(null);
-         /*   if (user == null) {
-                return ResponseEntity.status(404).body("User not found");
-            }*/
+            if (user == null) {
+                response.put("error", "User Not Found!");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }
 
-
-
+            requestData.remove("user_id");
             Marker markerDataFromRequestBody = objectMapper.convertValue(requestData, Marker.class);
-
-            markerDataFromRequestBody.setUser(user); // Associating the user with the marker
+            markerDataFromRequestBody.setUser(user);
 
             System.out.println("****************************    Object Mapper     ****************************");
-            System.out.println(markerDataFromRequestBody);
+            //System.out.println(markerDataFromRequestBody);
 
             Marker savedMarker = markerRepository.save(markerDataFromRequestBody);
-
             response.put("marker_id", savedMarker.getId());
             System.out.println("Marker added: " + response.get("marker_id"));
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -72,25 +68,22 @@ public class MarkerController {
         }
     }
 
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @GetMapping("/all")
+    public ResponseEntity<List<MarkerDataForClient>> getAllMarkersAsJson() {
+        System.out.println("\n****************************   All Markers Request Received     ****************************");
+        List<Marker> markers = markerRepository.findAll();
+        List<MarkerDataForClient> markersData = markers.stream()
+                .map(Marker::toMarkerData) // Aggiungi il metodo toMarkerData in Marker
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(markersData);
+    }
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<MarkerDataForClient> getMarkerByIdAsJson(@PathVariable("id") Long id) {
+        System.out.println("\n****************************   Marker ID Request Received     ****************************");
+        Optional<Marker> marker = markerRepository.findById(id);
+        return marker.map(Marker::toMarkerData)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }

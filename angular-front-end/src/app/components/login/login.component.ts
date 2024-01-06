@@ -51,7 +51,7 @@ export class LoginComponent {
           })
         )
         .subscribe((response: any) => {
-          console.log('Login COMPLETED:\n', response);
+    //      console.log('Login COMPLETED:\n', response);
 
           this.authService.login(response.user_id, response.user_name);
           this.router.navigate(['/dashboard']);

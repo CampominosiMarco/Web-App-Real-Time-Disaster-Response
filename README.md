@@ -67,6 +67,18 @@ Please read these documentation to install google-maps (`npm i @angular/google-m
 ### Database
 In this example I used an SQL database as you can see in [db folder](/db)
 
+
+ALTER TABLE `marker` ADD CONSTRAINT `FK_User_Marker` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
+
 ### Spring Framework
 As explained in [Visual Studio Code Spring Documentation](https://code.visualstudio.com/docs/java/java-spring-boot), I developed a basic backend code to manage user information storage and seamlessly respond to requests from the Angular frontend.<br>
 This example comprises only the essential Entities, Controllers, and Repositories. Therefore, I'll not delving into details.<br>
+
+
+ng add @angular/material
+
+
+mancano i test per auth service
+marker service
+e tutta la dashboard

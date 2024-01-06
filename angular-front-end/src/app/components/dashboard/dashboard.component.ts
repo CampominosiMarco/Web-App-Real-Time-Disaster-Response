@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ComponentFactoryResolver, ComponentRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ToggleSearchComponent } from './toggle-search/toggle-search.component';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { MarkerService } from 'src/app/services/marker.service';
+import { MarkerFormComponent } from './marker-form/marker-form.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -28,7 +29,13 @@ export class DashboardComponent implements OnInit {
     lng: this.center.lng
   };
 
-  constructor(private http: HttpClient, private authService: AuthService, private router: Router) {
+  markers: any[] = [];
+
+  constructor(private http: HttpClient,
+              private authService: AuthService,
+              private router: Router,
+              private markerService: MarkerService,
+              private componentFactoryResolver: ComponentFactoryResolver) {
     if (!this.authService.isLoggedIn()){
       this.router.navigate(['/login']);
     }else{
@@ -39,13 +46,6 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
 
   }
-
-
-
-
-
-
-
 
   async initMap(): Promise<void> {
     const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
@@ -68,65 +68,41 @@ export class DashboardComponent implements OnInit {
       const latLng = event.latLng;
 
       if (latLng != null) {
-    //    this.showMarkerPopup(latLng);
-
-
-
-
-        this.saveMarker(true, 'PASTA\nACQUA\nIDROVORA', 'Y', latLng);
-
-        this.addMarkerOnMap(true, 'PASTA\nACQUA\nIDROVORA', 'Y', latLng);
+ //       this.showMarkerPopup(latLng);
       }
     });
 
     if (this.map) {
       this.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+      this.fetchMarkers();
     }
-
-
-
-
-
-/*
-
-    const markerPosition = {
-      lat: this.center.lat,
-      lng: this.center.lng
-    };
-    this.addMarkerOnMap(markerPosition, 'Piazza di Quarrata\n' +  + this.authService.getUserId() + '\n' + this.authService.getUserName() + '\n' + this.authService.isAdmin());
-
-*/
-
-
-
-
   }
 
-/* TODO
-all'avvio visualizzare tutto
-impostare DB
-*/
+  fetchMarkers(): void {
+    this.markerService.getAllMarkers()
+      .subscribe((data: any[]) => {
+        this.markers = data;
+      //  console.log('Markers:', this.markers);
 
+        this.markers.forEach((markerInfo: any) => {
 
+          let title = `[${markerInfo.id}]\n${markerInfo.userName}\n`;
+          if (markerInfo.userMobile && markerInfo.userEmail) {
+            title += `${markerInfo.userMobile}\n${markerInfo.userEmail}\n`;
+          }
+          title += `-----------\n${markerInfo.description}\n`;
+    
+          this.addMarkerOnMap(markerInfo.icon, title, markerInfo.position);
+        });
+      });
+  }
 
-
-  addMarkerOnMap(consent: boolean, description: string, icon: string, latLng: google.maps.LatLng): void {
+  addMarkerOnMap(icon: string, title: string, latLng: google.maps.LatLng): void {
     if (this.map) {
-
-
-      let my_title = this.authService.getUserName() + 
-                      consent +
-                      "-----" +
-                      description;
-  
-
-
-
-
       new google.maps.Marker({
-        position: this.latLngConvertion(latLng),
+        position: latLng,
         map: this.map,
-        title: my_title,
+        title: title,
         icon: {
           url: this.iconLetterToLink(icon),
           scaledSize: new google.maps.Size(33, 50),
@@ -138,76 +114,45 @@ impostare DB
         },*/
       });
     }
-
-
-
-
-
-
   }
 
-  
 
-  saveMarker(consent: boolean, description: string, icon: string, latLng: google.maps.LatLng){
 
-    const url = 'http://localhost:8081/markers/add';      //TODO aggiornare url
 
-    
-    const markerPosition = { lat: latLng.lat(), lng: latLng.lng() };
 
-    const dataToSendJSON = {
-      user_id: this.authService.getUserId(),
-      consent: consent,
-      description: description,
-      icon: icon,
-      position: JSON.stringify(markerPosition)
-    }
 
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    this.http.post(url, dataToSendJSON, { headers })
-      .pipe(
-        catchError((response) => {
+
+  // Funzione che riceve i dati dal componente figlio
+  receiveFormData(formData: any) {
+    // Puoi fare qualcosa con i dati ricevuti dal form, ad esempio stamparli in console
+    console.log('Dati ricevuti dal form:', formData);
+
+
+
+
+//{selectedIcon: 'R', description: '', allowContactInfo: false}
+
+
+
+
+
+    // O eseguire altre azioni necessarie con questi dati nel componente genitore
+    // ...
+  }
 
 /*
-          if (response && response.message) {
-           // this.logUserAlert = response.message;
-          }
-*/
-
-
-          return throwError(() => new Error(response));
-        })
-      )
-      .subscribe((response: any) => {
-        console.log('Marker ADD COMPLETED:\n', response);
-
-
-    });
-
-  }
-
-
-
-
-
-
-
-
-
   showMarkerPopup(latLng: google.maps.LatLng): void {
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(MarkerFormComponent);
+    this.markerComponentRef = this.markerContainer.createComponent(componentFactory);
 
-
-
-    // Qui puoi utilizzare qualsiasi libreria o meccanismo per mostrare un popup, ad esempio un modal o un componente Angular
-    // In questo esempio, supponiamo un alert per semplicità
-    const title = prompt('Inserisci il titolo del marker:');
-    if (title) {
-      this.addMarkerOnMap(true, title, 'O', latLng);
-    }
+    this.markerComponentRef.instance.latLng = latLng;
+    this.markerComponentRef.instance.onSubmit.subscribe(() => {
+      // Funzione per gestire il salvataggio del marker con i dati raccolti dal form
+      // Puoi accedere ai dati tramite this.markerComponentRef.instance.latLng
+    });
   }
-
-
+*/
 
 
 
@@ -217,7 +162,6 @@ impostare DB
 
 
   latLngConvertion(latLng: google.maps.LatLng): google.maps.LatLngLiteral{
-
     const latLngLiteral: google.maps.LatLngLiteral = {
       lat: latLng.lat(),
       lng: latLng.lng(),
@@ -228,7 +172,6 @@ impostare DB
 
   iconLetterToLink(letter: string): string{
     let link: string;
-
     switch (letter.toUpperCase()) {
         case 'B':
             link = 'assets/blue_point.png';
@@ -249,7 +192,6 @@ impostare DB
             link = 'assets/blue_point.png';
             break;
     }
-
     return link;
   }
     
