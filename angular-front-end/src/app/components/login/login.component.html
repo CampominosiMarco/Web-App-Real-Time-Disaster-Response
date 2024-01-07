@@ -24,20 +24,20 @@
                       <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                       <div class="form-outline flex-fill mb-0">
                         <label class="form-label" for="pass">Password</label>
-                        <input type="password" id="pass" class= "form-control" [(ngModel)]="logPassword" name="logPassword"required (focus)="resetAttribute()"/>
+                        <input type="password" id="pass" class= "form-control" [(ngModel)]="logPassword" name="logPassword" required (focus)="resetAttribute()"/>
                       </div>
                     </div>
 
 <!--  SERVER ALERT  -->
                     
-                    <div *ngIf="logUserAlert !== null && logUserAlert !== ''" id="serveralert" class="alert alert-danger" style = "color: red; text-align: center; margin: 10px; font-weight: bold;">
+                    <div *ngIf="logUserAlert !== null && logUserAlert !== ''" id="serveralert" name="serveralert" class="alert alert-danger" style = "color: red; text-align: center; margin: 10px; font-weight: bold;">
                       {{ logUserAlert }}
                     </div>
 
 <!--  BUTTON  -->
                     
                     <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                      <button type="submit" class="btn btn-primary btn-lg" id="loginbutton" [disabled]="logUser === '' || logPassword === ''">Accedi</button>
+                      <button type="submit" class="btn btn-primary btn-lg" id="loginbutton" name="loginbutton" [disabled]="logUser === '' || logPassword === ''">Accedi</button>
                     </div>
 
 <!--  LINK REGISTRATION  -->

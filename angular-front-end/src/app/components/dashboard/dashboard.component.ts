@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, ComponentRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ToggleSearchComponent } from './toggle-search/toggle-search.component';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
@@ -30,12 +30,13 @@ export class DashboardComponent implements OnInit {
   };
 
   markers: any[] = [];
+  showMarkerForm: boolean = false;
+  currentlatLng: google.maps.LatLng | undefined;
 
   constructor(private http: HttpClient,
               private authService: AuthService,
               private router: Router,
-              private markerService: MarkerService,
-              private componentFactoryResolver: ComponentFactoryResolver) {
+              private markerService: MarkerService) {
     if (!this.authService.isLoggedIn()){
       this.router.navigate(['/login']);
     }else{
@@ -68,7 +69,8 @@ export class DashboardComponent implements OnInit {
       const latLng = event.latLng;
 
       if (latLng != null) {
- //       this.showMarkerPopup(latLng);
+        this.currentlatLng = latLng;
+        this.showMarkerForm = true;
       }
     });
 
@@ -116,50 +118,21 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-
-
-
-
-
-
-
-  // Funzione che riceve i dati dal componente figlio
   receiveFormData(formData: any) {
-    // Puoi fare qualcosa con i dati ricevuti dal form, ad esempio stamparli in console
-    console.log('Dati ricevuti dal form:', formData);
+    //console.log('Form data:', formData);
 
+    if (this.currentlatLng != null){
+      this.markerService.saveMarker(formData.allowContactInfo, formData.description, formData.selectedIcon, this.currentlatLng)
+        .subscribe((response: any) => {
+          let title = `[NEW - ${response.marker_id}]\n${this.authService.getUserName()}\n-----------\n${formData.description}\n`;
 
-
-
-//{selectedIcon: 'R', description: '', allowContactInfo: false}
-
-
-
-
-
-    // O eseguire altre azioni necessarie con questi dati nel componente genitore
-    // ...
+          if (this.currentlatLng != null){
+            this.addMarkerOnMap(formData.selectedIcon, title, this.currentlatLng);
+          }
+      });
+    }
+    this.showMarkerForm = false;
   }
-
-/*
-  showMarkerPopup(latLng: google.maps.LatLng): void {
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(MarkerFormComponent);
-    this.markerComponentRef = this.markerContainer.createComponent(componentFactory);
-
-    this.markerComponentRef.instance.latLng = latLng;
-    this.markerComponentRef.instance.onSubmit.subscribe(() => {
-      // Funzione per gestire il salvataggio del marker con i dati raccolti dal form
-      // Puoi accedere ai dati tramite this.markerComponentRef.instance.latLng
-    });
-  }
-*/
-
-
-
-
-
-
-
 
   latLngConvertion(latLng: google.maps.LatLng): google.maps.LatLngLiteral{
     const latLngLiteral: google.maps.LatLngLiteral = {
