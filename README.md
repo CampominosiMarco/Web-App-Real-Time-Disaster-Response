@@ -51,6 +51,29 @@ Please read:
 - You can test every single component using: `ng test --include="**/home.component.spec.ts"`
 - You can test all project using: `ng test angular-front-end`
 
+
+
+
+
+package.json
+
+  "browser": {
+    "crypto": false
+  }
+
+
+
+angular.json
+
+
+            "allowedCommonJsDependencies": [
+              "bcryptjs"
+            ],
+
+
+
+
+
 ### Google Maps Note
 This is the core of this project, so is very important to understand how use Google Maps API in Angular framework.<br>
 Please read these documentation to install google-maps (`npm i @angular/google-maps`) and use it.<br>
@@ -59,6 +82,15 @@ Please read these documentation to install google-maps (`npm i @angular/google-m
 1. [Angular google-maps](https://www.npmjs.com/package/@angular/google-maps)
 2. [GitHub google-maps](https://github.com/angular/components/tree/main/src/google-maps#readme)
 3. [Google Maps Developers Documentation](https://developers.google.com/maps/documentation/javascript/overview?hl=it#javascript) 
+
+
+
+
+npm install @types/googlemaps --save-dev
+Add googlemaps to the types array in both files tsconfig.app.json respectively in tsconfig.spec.json (save both files)
+"types": ["google.maps"]
+
+
 
 <br>
 
@@ -79,6 +111,6 @@ This example comprises only the essential Entities, Controllers, and Repositorie
 ng add @angular/material
 
 
-mancano i test per auth service
+mancano i test per 
 marker service
 e tutta la dashboard

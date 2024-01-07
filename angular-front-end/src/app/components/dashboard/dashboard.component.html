@@ -3,5 +3,5 @@
 <app-marker-form *ngIf="showMarkerForm" (formSubmit)="receiveFormData($event)"></app-marker-form>
 
 <div id="marker_info">marker_info</div>
-
+<button class="btn btn-primary" (click)="refreshMap()">Refresh Mappa</button>
 <div id="map"></div>

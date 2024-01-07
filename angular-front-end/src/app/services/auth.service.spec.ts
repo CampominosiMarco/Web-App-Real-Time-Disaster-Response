@@ -28,5 +28,5 @@ describe('AuthService', () => {
     expect(service.isLoggedIn()).toBe(false);
     console.log(check2 + " -> [OK]");
   });
-  adsasd
+
 });

@@ -25,7 +25,6 @@ export class MarkerFormComponent {
     };
     this.reset();
     this.formSubmit.emit(formData);
-
   }
 
   reset(){
@@ -46,5 +45,13 @@ export class MarkerFormComponent {
     } else {
       this.selectedIcon = 'R'
     }
+  }
+
+  resetForm(){
+    const formData = {
+      reset: 'user_reset'
+    };
+    this.reset();
+    this.formSubmit.emit(formData);
   }
 }

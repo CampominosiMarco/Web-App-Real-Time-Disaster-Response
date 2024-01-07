@@ -21,7 +21,7 @@ describe('ToggleSearchComponent', () => {
     expect(component).toBeTruthy();
   });
 
-sSas
+
 
   //TODO test
 });

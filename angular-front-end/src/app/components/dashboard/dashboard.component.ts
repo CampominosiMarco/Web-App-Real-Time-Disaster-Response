@@ -1,3 +1,5 @@
+
+ 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ToggleSearchComponent } from './toggle-search/toggle-search.component';
 import { AuthService } from 'src/app/services/auth.service';
@@ -17,6 +19,7 @@ export class DashboardComponent implements OnInit {
   @ViewChild(ToggleSearchComponent) toggleSearchComponent!: ToggleSearchComponent;
 
   map: google.maps.Map | null = null;
+  real_markers: google.maps.Marker[] = [];
 
   center: google.maps.LatLngLiteral = {
     lat: 43.8475,
@@ -29,7 +32,7 @@ export class DashboardComponent implements OnInit {
     lng: this.center.lng
   };
 
-  markers: any[] = [];
+  markers_from_db: any[] = [];
   showMarkerForm: boolean = false;
   currentlatLng: google.maps.LatLng | undefined;
 
@@ -81,12 +84,14 @@ export class DashboardComponent implements OnInit {
   }
 
   fetchMarkers(): void {
+    this.removeAllMarkers();
+    
     this.markerService.getAllMarkers()
       .subscribe((data: any[]) => {
-        this.markers = data;
-      //  console.log('Markers:', this.markers);
+        this.markers_from_db = data;
+        console.log('Markers da DB:', this.markers_from_db);
 
-        this.markers.forEach((markerInfo: any) => {
+        this.markers_from_db.forEach((markerInfo: any) => {
 
           let title = `[${markerInfo.id}]\n${markerInfo.userName}\n`;
           if (markerInfo.userMobile && markerInfo.userEmail) {
@@ -101,7 +106,7 @@ export class DashboardComponent implements OnInit {
 
   addMarkerOnMap(icon: string, title: string, latLng: google.maps.LatLng): void {
     if (this.map) {
-      new google.maps.Marker({
+      let temp_marker = new google.maps.Marker({
         position: latLng,
         map: this.map,
         title: title,
@@ -115,23 +120,39 @@ export class DashboardComponent implements OnInit {
           fontWeight: 'bold',
         },*/
       });
+
+      this.real_markers.push(temp_marker);
     }
   }
 
   receiveFormData(formData: any) {
     //console.log('Form data:', formData);
 
-    if (this.currentlatLng != null){
-      this.markerService.saveMarker(formData.allowContactInfo, formData.description, formData.selectedIcon, this.currentlatLng)
-        .subscribe((response: any) => {
-          let title = `[NEW - ${response.marker_id}]\n${this.authService.getUserName()}\n-----------\n${formData.description}\n`;
+    if (formData.reset !== 'user_reset'){
+      if (this.currentlatLng != null){
+        this.markerService.saveMarker(formData.allowContactInfo, formData.description, formData.selectedIcon, this.currentlatLng)
+          .subscribe((response: any) => {
+           // let title = `[NEW - ${response.marker_id}]\n${this.authService.getUserName()}\n-----------\n${formData.description}\n`;
 
-          if (this.currentlatLng != null){
-            this.addMarkerOnMap(formData.selectedIcon, title, this.currentlatLng);
-          }
-      });
+            if (this.currentlatLng != null){
+              //this.addMarkerOnMap(formData.selectedIcon, title, this.currentlatLng);
+              this.fetchMarkers();
+            }
+        });
+      }
     }
     this.showMarkerForm = false;
+  }
+
+  refreshMap(){
+    this.fetchMarkers();
+  }
+
+  removeAllMarkers() {
+    for (let i = 0; i < this.real_markers.length; i++) {
+      this.real_markers[i].setMap(null);
+    }
+    this.real_markers = [];
   }
 
   latLngConvertion(latLng: google.maps.LatLng): google.maps.LatLngLiteral{
