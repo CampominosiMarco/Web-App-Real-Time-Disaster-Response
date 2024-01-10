@@ -11,7 +11,7 @@ import it.campominosi.springbackend.entity.Marker;
 @Repository
 public interface MarkerRepository extends JpaRepository<Marker, Long> {
 
-    List<Marker> findAllByUserId(int userId);
+    List<Marker> findAllByUserId(Long userId);
 
     List<Marker> findAllByDescriptionContaining(String keyword);
 

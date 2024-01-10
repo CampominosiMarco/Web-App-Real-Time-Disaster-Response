@@ -34,6 +34,21 @@ export class DashboardComponent implements OnInit {
   showMarkerForm: boolean = false;
   currentlatLng: google.maps.LatLng | undefined;
 
+
+
+
+
+
+
+
+
+  markerInfos: any[] = [];
+
+
+
+
+
+
   constructor(private authService: AuthService,
               private router: Router,
               private markerService: MarkerService) {
@@ -41,6 +56,35 @@ export class DashboardComponent implements OnInit {
       this.router.navigate(['/login']);
     }else{
       this.initMap();
+
+
+
+
+
+
+
+
+
+
+
+
+      this.markerService.getMarkerByUser(this.authService.currentUserId)
+
+    .subscribe((data: any[]) => {
+
+      data.forEach((markerInfo: any) => {
+        //console.log("List: " + markerInfo.description);
+
+
+        this.markerInfos = data;
+
+        
+
+      });
+    });
+
+
+
     }
   }
 

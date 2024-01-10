@@ -86,4 +86,14 @@ public class MarkerController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/user/{user_id}")
+    public ResponseEntity<List<MarkerDataForClient>> getMarkerByUserAsJson(@PathVariable("user_id") Long id) {
+        System.out.println("\n****************************   Marker User Request Received     ****************************");
+        List<Marker> markers = markerRepository.findAllByUserId(id);
+        List<MarkerDataForClient> markersData = markers.stream()
+                .map(Marker::toMarkerData)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(markersData);
+    }
 }
