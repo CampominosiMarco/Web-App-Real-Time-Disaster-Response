@@ -1,17 +1,26 @@
 <div class="container">
 
-    <h3>{{ toggleValue ? 'Offerte' : 'Richieste'}}</h3>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="switch">
+                <input id="switch-T" name="tripple" type="radio" value="T" class="switch-input" [checked]="switchValue === 'T'" [(ngModel)]="switchValue" (ngModelChange)="switchMode($event)"/>
+                <label for="switch-T" class="switch-label switch-label-T">Tutto</label>
+
+                <input id="switch-R" name="tripple" type="radio" value="R" class="switch-input" [checked]="switchValue === 'R'" [(ngModel)]="switchValue" (ngModelChange)="switchMode($event)"/>
+                <label for="switch-R" class="switch-label switch-label-R">Richieste</label>
+
+                <input id="switch-O" name="tripple" type="radio" value="G" class="switch-input" [checked]="switchValue === 'G'" [(ngModel)]="switchValue" (ngModelChange)="switchMode($event)"/>
+                <label for="switch-O" class="switch-label switch-label-G">Offerte</label>
+
+                <span class="switch-selector"></span>
+            </div>
+        </div>
+    </div>
 
     <div class="search-group">
+        <input type="text" placeholder="Cosa stai cercando?" [(ngModel)]="description">
 
-        <label class="toggle">
-            <input type="checkbox" [(ngModel)]="toggleValue" (click)="toggleMode()">
-            <span class="slider"></span>
-        </label>
-
-        <input type="text" placeholder="Inserisci la descrizione" [(ngModel)]="description">
-
-        <button type="submit" class="btn btn-primary" (click)="toggleSearch()">Cerca</button>
+        <button type="submit" class="btn btn-primary" (click)="switchSearch()">Cerca</button>
     </div>
 
 </div>

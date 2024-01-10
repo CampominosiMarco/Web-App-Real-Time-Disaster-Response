@@ -1,12 +1,8 @@
-
- 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ToggleSearchComponent } from './toggle-search/toggle-search.component';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { MarkerService } from 'src/app/services/marker.service';
-import { MarkerFormComponent } from './marker-form/marker-form.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,17 +23,18 @@ export class DashboardComponent implements OnInit {
   };
   zoom = 13;
 
+/*
   display: google.maps.LatLngLiteral = {
     lat: this.center.lat,
     lng: this.center.lng
   };
+*/
 
   markers_from_db: any[] = [];
   showMarkerForm: boolean = false;
   currentlatLng: google.maps.LatLng | undefined;
 
-  constructor(private http: HttpClient,
-              private authService: AuthService,
+  constructor(private authService: AuthService,
               private router: Router,
               private markerService: MarkerService) {
     if (!this.authService.isLoggedIn()){
@@ -58,6 +55,7 @@ export class DashboardComponent implements OnInit {
       zoom: this.zoom,
     });
 
+  /*
     //Listener mouse
     this.map.addListener('mousemove', (event: google.maps.MapMouseEvent) => {
       const latLng = event.latLng; 
@@ -66,6 +64,7 @@ export class DashboardComponent implements OnInit {
         this.display = (latLng.toJSON());
       }
     });
+  */
 
     //Listener double click
     this.map.addListener('dblclick', (event: google.maps.MapMouseEvent) => {
@@ -89,29 +88,22 @@ export class DashboardComponent implements OnInit {
     this.markerService.getAllMarkers()
       .subscribe((data: any[]) => {
         this.markers_from_db = data;
-        console.log('Markers da DB:', this.markers_from_db);
+        //console.log('Markers da DB:', this.markers_from_db);
 
         this.markers_from_db.forEach((markerInfo: any) => {
-
-          let title = `[${markerInfo.id}]\n${markerInfo.userName}\n`;
-          if (markerInfo.userMobile && markerInfo.userEmail) {
-            title += `${markerInfo.userMobile}\n${markerInfo.userEmail}\n`;
-          }
-          title += `-----------\n${markerInfo.description}\n`;
-    
-          this.addMarkerOnMap(markerInfo.icon, title, markerInfo.position);
+          this.addMarkerOnMap(markerInfo);
         });
       });
   }
 
-  addMarkerOnMap(icon: string, title: string, latLng: google.maps.LatLng): void {
+  addMarkerOnMap(markerInfo: any): void {
     if (this.map) {
       let temp_marker = new google.maps.Marker({
-        position: latLng,
+        position: markerInfo.position,
         map: this.map,
-        title: title,
+        title: `[ID_${markerInfo.id}] - ${markerInfo.userName}`,
         icon: {
-          url: this.iconLetterToLink(icon),
+          url: this.iconLetterToLink(markerInfo.icon),
           scaledSize: new google.maps.Size(33, 50),
         },
         /*label: {
@@ -119,6 +111,26 @@ export class DashboardComponent implements OnInit {
           color: 'white',
           fontWeight: 'bold',
         },*/
+      });
+
+      let temp_content = `<div>
+                            <b>ID_</b>${markerInfo.id}<br>
+                            <h5>${markerInfo.userName}</h5>`
+      if (markerInfo.userMobile && markerInfo.userEmail) {
+        temp_content += ` <div>
+                          <u>Contatti:</u><br>
+                          <span style="font-size: 23px;">&#9993;</span> ${markerInfo.userEmail}<br>
+                          <span style="font-size: 25px;">&#9990;</span> ${markerInfo.userMobile}<br>
+                          </div><br>`
+      }
+      temp_content += `<u>Descrizione:</u><br>${markerInfo.description.replaceAll("\n", "<br>")}
+                      </div>`
+
+      temp_marker.addListener('click', () => {
+          let infoWindow = new google.maps.InfoWindow({
+              content: temp_content
+          });
+          infoWindow.open(this.map, temp_marker);
       });
 
       this.real_markers.push(temp_marker);
@@ -132,10 +144,10 @@ export class DashboardComponent implements OnInit {
       if (this.currentlatLng != null){
         this.markerService.saveMarker(formData.allowContactInfo, formData.description, formData.selectedIcon, this.currentlatLng)
           .subscribe((response: any) => {
-           // let title = `[NEW - ${response.marker_id}]\n${this.authService.getUserName()}\n-----------\n${formData.description}\n`;
+
+            console.log("New marker ID: " + response.marker_id);
 
             if (this.currentlatLng != null){
-              //this.addMarkerOnMap(formData.selectedIcon, title, this.currentlatLng);
               this.fetchMarkers();
             }
         });
@@ -145,6 +157,8 @@ export class DashboardComponent implements OnInit {
   }
 
   refreshMap(){
+    this.toggleSearchComponent.reset();
+
     this.fetchMarkers();
   }
 
@@ -191,6 +205,47 @@ export class DashboardComponent implements OnInit {
     
 //This is methods called from child. See also EventEmitter in child and listener in HTML
   onToggleSearchEvent() {
-    console.log('Evento ricevuto dal ToggleSearchComponent: ' + this.toggleSearchComponent.getDescription() + ' ' + this.toggleSearchComponent.getValue());
+
+    this.removeAllMarkers();
+    
+    const markerLetter = this.toggleSearchComponent.getValue();
+    const markerDescription = this.toggleSearchComponent.getDescription().toUpperCase();
+
+    this.markers_from_db.forEach((markerInfo: any) => {
+
+      let save = false;
+      const id = 'ID_' + markerInfo.id;
+
+      if (markerDescription != ''){
+
+        if (markerInfo.userEmail && markerInfo.userMobile) {
+          if (id.includes(markerDescription) || markerInfo.userName.toUpperCase().includes(markerDescription) ||
+              markerInfo.userEmail.toUpperCase().includes(markerDescription) || markerInfo.userMobile.includes(markerDescription) ||
+              markerInfo.description.toUpperCase().includes(markerDescription)){
+
+            if(markerLetter == 'T' || markerInfo.icon == markerLetter){
+              save = true;
+            }
+          }
+        }else{
+          if (id.includes(markerDescription) || markerInfo.userName.toUpperCase().includes(markerDescription) ||
+              markerInfo.description.toUpperCase().includes(markerDescription)){
+
+            if(markerLetter == 'T' || markerInfo.icon == markerLetter){
+              save = true;
+            }
+          }
+        }
+
+      }else{
+        if(markerLetter == 'T' || markerInfo.icon == markerLetter){
+          save = true;
+        }
+      }
+
+      if (save){
+        this.addMarkerOnMap(markerInfo);
+      }
+    });
   }
 }

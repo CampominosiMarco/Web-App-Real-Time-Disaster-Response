@@ -9,14 +9,15 @@ export class ToggleSearchComponent {
 
   @Output() notifyDashboard: EventEmitter<any> = new EventEmitter<any>();
 
-  toggleValue: boolean = true;
+  switchValue: string = 'T';
   description: string = '';
 
-  toggleMode() {
-    this.toggleValue = !this.toggleValue;
+  switchMode(value: string) {
+    this.setValue(value);
+    this.switchSearch();
   }
 
-  toggleSearch() {
+  switchSearch() {
     this.notifyDashboard.emit();
   }
 
@@ -24,8 +25,21 @@ export class ToggleSearchComponent {
     return this.description;
   }
 
+  setDescription(value: string){
+    this.description = value;
+  }
+
   getValue(){
-    return this.toggleValue;
+    return this.switchValue;
+  }
+
+  setValue(value: string) {
+    this.switchValue = value;
+  }
+
+  reset(){
+    this.switchValue = 'T';
+    this.description = '';
   }
 
 }

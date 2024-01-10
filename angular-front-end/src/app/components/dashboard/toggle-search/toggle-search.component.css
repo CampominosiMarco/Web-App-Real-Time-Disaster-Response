@@ -7,49 +7,65 @@
     margin-top: 20px;
 }
 
-.toggle {
+.switch {
     position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
-    margin-bottom: 10px;
-    margin-right: 10px;
+    height: 32px;
+    width: 300px;
+    margin: 20px auto;
+    background: #F2F2F2;
+    background: #D7D7D7;
+    border-radius: 32px;
 }
 
-.toggle input {
+.switch-label {
+    font-weight: bold;
+    position: relative;
+    z-index: 2;
+    float: left;
+    width: 100px;
+    line-height: 32px;
+    font-size: 16px;
+    color: black;
+    text-align: center;
+    cursor: pointer;
+}
+
+.switch-input {
     display: none;
 }
 
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+.switch-input:checked + .switch-label {
+    color: black;
+    transition: 0.15s ease-out;
+    transition-property: color, text-shadow;
+}
+
+.switch-input:checked + .switch-label-T ~ .switch-selector {
+    transform: translateX(0%);
+    background-color: gray;
+}
+
+.switch-input:checked + .switch-label-R ~ .switch-selector {
+    transform: translateX(100%);
     background-color: red;
-    transition: 0.3s;
-    border-radius: 34px;
 }
 
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: 0.3s;
-    border-radius: 50%;
-}
-
-input:checked + .slider {
+.switch-input:checked + .switch-label-G ~ .switch-selector {
+    transform: translateX(200%);
     background-color: green;
 }
 
-input:checked + .slider:before {
-    transform: translateX(26px);
+.switch-selector {
+    position: absolute;
+    z-index: 1;
+    top: 0px;
+    left: 0px;
+    display: block;
+    width: 100px;
+    height: 32px;
+    border-radius: 32px;
+    background-color: #1ab394;
+    transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
 }
 
 .search-group {
@@ -60,6 +76,7 @@ input:checked + .slider:before {
 
 input[type="text"] {
     margin-right: 10px;
+    margin-left: 10px;
 }
 
 button {
