@@ -109,7 +109,7 @@ This example comprises only the essential Entities, Controllers, and Repositorie
 
 
 ng add @angular/material
-
+ng add ngx-pagination
 
 mancano i test per 
 marker service

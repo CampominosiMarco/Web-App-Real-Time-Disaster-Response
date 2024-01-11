@@ -96,4 +96,21 @@ public class MarkerController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(markersData);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteMarkerById(@PathVariable("id") Long id) {
+        System.out.println("\n****************************   Marker Deletion Request Received     ****************************");
+
+        Map<String, Object> response = new HashMap<>();
+        if (markerRepository.existsById(id)) {
+            markerRepository.deleteById(id);
+
+            response.put("deleted_marker_id", id);
+            System.out.println("Marker deleted: " + response.get("deleted_marker_id"));
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            response.put("error", "Not Found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
 }

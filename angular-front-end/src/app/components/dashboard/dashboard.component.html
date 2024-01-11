@@ -16,28 +16,9 @@
 <br>
 
 <div id="map"></div>
-
+<app-user-table></app-user-table>
 <div class="container">
-    <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Icon</th>
-            <th>Description</th>
-            <th>Modifica</th>
-            <th>Cancella</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let markerInfo of markerInfos">
-            <td>{{ markerInfo.id }}</td>
-            <td>{{ markerInfo.icon }}</td>
-            <td>{{ markerInfo.description }}</td>
-            <td>image penna</td>
-            <td>image croce</td>
-          </tr>
-        </tbody>
-      </table>
+
 
 
     <div id="space" style="margin-bottom: 70px;"></div>

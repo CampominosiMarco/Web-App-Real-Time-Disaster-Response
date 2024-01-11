@@ -1,0 +1,35 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  img.icon {
+    height: 38px;
+    width: 25px;
+}
+
+img.actions {
+    height: 25px;
+    width: 25px;
+    border-radius: 15px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 2px;
+    min-width: 20px;
+}
+
+.description{
+    text-align: left;
+}

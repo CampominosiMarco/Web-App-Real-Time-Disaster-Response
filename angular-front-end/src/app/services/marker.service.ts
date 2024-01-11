@@ -8,9 +8,10 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class MarkerService {
-  private saveUrl = 'http://localhost:8081/markers/add';      //TODO aggiornare url
-  private markersUrl = 'http://localhost:8081/markers/all';   //TODO aggiornare url
-  private userUrl = 'http://localhost:8081/markers/user/';      //TODO aggiornare url
+  private baseUrl = 'http://localhost:8081/markers/';      //TODO aggiornare url
+  private saveUrl = this.baseUrl + 'add';                 //TODO aggiornare url
+  private markersUrl = this.baseUrl + 'all';              //TODO aggiornare url
+  private userUrl = this.baseUrl + 'user/';               //TODO aggiornare url
 
 
   constructor(private http: HttpClient, private authService: AuthService) { }
@@ -39,11 +40,13 @@ export class MarkerService {
     return this.http.get<any[]>(this.markersUrl);
   }
 
-
-
   getMarkerByUser(userId: number): Observable<any> {
     const complete_url = `${this.userUrl}${userId}`;
     return this.http.get<any[]>(complete_url);
   }
   
+  deleteMarkerById(id: number): Observable<any> {
+    const complete_url = `${this.baseUrl}${id}`;
+    return this.http.delete<any>(complete_url);
+  }
 }

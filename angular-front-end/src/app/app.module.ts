@@ -19,6 +19,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { ToggleSearchComponent } from './components/dashboard/toggle-search/toggle-search.component';
 import { MarkerFormComponent } from './components/dashboard/marker-form/marker-form.component';
+import { UserTableComponent } from './components/dashboard/user-table/user-table.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({ 
   declarations: [
@@ -33,6 +35,7 @@ import { MarkerFormComponent } from './components/dashboard/marker-form/marker-f
     DashboardComponent,
     ToggleSearchComponent,
     MarkerFormComponent,
+    UserTableComponent,
 
   ],
   imports: [
@@ -42,7 +45,7 @@ import { MarkerFormComponent } from './components/dashboard/marker-form/marker-f
     RegistrationComponent,        //Questo viene importato perchè è STANDALONE ed ha ReactiveFormsModule all'interno
     FormsModule,         //Serve per il binding
     GoogleMapsModule,
-
+    NgxPaginationModule
   ],
   providers: [],
   bootstrap: [AppComponent]

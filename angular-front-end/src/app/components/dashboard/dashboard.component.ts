@@ -3,6 +3,7 @@ import { ToggleSearchComponent } from './toggle-search/toggle-search.component';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
 import { MarkerService } from 'src/app/services/marker.service';
+import { UserTableComponent } from './user-table/user-table.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,6 +14,7 @@ export class DashboardComponent implements OnInit {
 
   //This is necessary to get methods and attributes from child
   @ViewChild(ToggleSearchComponent) toggleSearchComponent!: ToggleSearchComponent;
+  @ViewChild(UserTableComponent) userTableComponent!: UserTableComponent;
 
   map: google.maps.Map | null = null;
   real_markers: google.maps.Marker[] = [];
@@ -34,21 +36,6 @@ export class DashboardComponent implements OnInit {
   showMarkerForm: boolean = false;
   currentlatLng: google.maps.LatLng | undefined;
 
-
-
-
-
-
-
-
-
-  markerInfos: any[] = [];
-
-
-
-
-
-
   constructor(private authService: AuthService,
               private router: Router,
               private markerService: MarkerService) {
@@ -57,34 +44,17 @@ export class DashboardComponent implements OnInit {
     }else{
       this.initMap();
 
-
-
-
-
-
-
-
-
-
-
-
       this.markerService.getMarkerByUser(this.authService.currentUserId)
+        .subscribe((data: any[]) => {
 
-    .subscribe((data: any[]) => {
+          data.forEach((markerInfo: any) => {
 
-      data.forEach((markerInfo: any) => {
-        //console.log("List: " + markerInfo.description);
-
-
-        this.markerInfos = data;
-
-        
-
-      });
-    });
-
-
-
+            markerInfo.icon = this.iconLetterToLink(markerInfo.icon);
+         //   markerInfo.description = markerInfo.description.replaceAll("\n", "<br>")
+            
+          });
+          this.userTableComponent.setMarkerInfos(data);
+        });
     }
   }
 
