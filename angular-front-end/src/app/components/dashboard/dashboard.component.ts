@@ -43,18 +43,7 @@ export class DashboardComponent implements OnInit {
       this.router.navigate(['/login']);
     }else{
       this.initMap();
-
-      this.markerService.getMarkerByUser(this.authService.currentUserId)
-        .subscribe((data: any[]) => {
-
-          data.forEach((markerInfo: any) => {
-
-            markerInfo.icon = this.iconLetterToLink(markerInfo.icon);
-         //   markerInfo.description = markerInfo.description.replaceAll("\n", "<br>")
-            
-          });
-          this.userTableComponent.setMarkerInfos(data);
-        });
+      this.updateTable();
     }
   }
 
@@ -67,6 +56,7 @@ export class DashboardComponent implements OnInit {
     this.map = new Map(document.getElementById("map") as HTMLElement, {
       center: this.center,
       zoom: this.zoom,
+      disableDoubleClickZoom: true
     });
 
   /*
@@ -84,9 +74,16 @@ export class DashboardComponent implements OnInit {
     this.map.addListener('dblclick', (event: google.maps.MapMouseEvent) => {
       const latLng = event.latLng;
 
-      if (latLng != null) {
+      if (latLng != null && this.map) {
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        this.map.setCenter(latLng);
+
         this.currentlatLng = latLng;
         this.showMarkerForm = true;
+
+        
       }
     });
 
@@ -174,6 +171,7 @@ export class DashboardComponent implements OnInit {
     this.toggleSearchComponent.reset();
 
     this.fetchMarkers();
+    this.updateTable();
   }
 
   removeAllMarkers() {
@@ -181,6 +179,22 @@ export class DashboardComponent implements OnInit {
       this.real_markers[i].setMap(null);
     }
     this.real_markers = [];
+  }
+
+  updateTable(){
+    this.markerService.getMarkerByUser(this.authService.currentUserId)
+        .subscribe((data: any[]) => {
+          data.forEach((markerInfo: any) => {
+            markerInfo.icon = this.iconLetterToLink(markerInfo.icon);
+         //   markerInfo.description = markerInfo.description.replaceAll("\n", "<br>")
+          });
+          this.userTableComponent.setMarkerInfos(data);
+        });
+  }
+
+  userTableAction(): void {
+    console.log("entrato");
+    this.refreshMap();
   }
 
   latLngConvertion(latLng: google.maps.LatLng): google.maps.LatLngLiteral{

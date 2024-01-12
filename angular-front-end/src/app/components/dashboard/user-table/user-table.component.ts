@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MarkerService } from 'src/app/services/marker.service';
 
 @Component({
@@ -7,15 +7,15 @@ import { MarkerService } from 'src/app/services/marker.service';
   styleUrls: ['./user-table.component.css']
 })
 export class UserTableComponent {
+
+  @Output() notifyDashboardUserTable: EventEmitter<any> = new EventEmitter<any>();
+  
   markerInfos: any[] = [];
   pagedMarkerInfos: any[] = [];
   pageSize: number = 10;
   currentPage: number = 1;
 
-  constructor(private markerService: MarkerService){
-    
-  }
-
+  constructor(private markerService: MarkerService){  }
 
   pageChanged(event: any): void {
     this.currentPage = event;
@@ -29,6 +29,7 @@ export class UserTableComponent {
   onDeleteClick(id: number): void {
     this.markerService.deleteMarkerById(id).subscribe((response: any) => {
       console.log("DELETED marker ID: " + response.deleted_marker_id);
+      this.notifyDashboardUserTable.emit();
     });
   }
 

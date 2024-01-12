@@ -7,6 +7,7 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./marker-form.component.css']
 })
 export class MarkerFormComponent {
+  
   @Output() formSubmit: EventEmitter<any> = new EventEmitter();
 
   selectedIcon: string = '';

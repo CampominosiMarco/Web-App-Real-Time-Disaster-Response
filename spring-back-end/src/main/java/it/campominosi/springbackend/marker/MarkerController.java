@@ -81,10 +81,13 @@ public class MarkerController {
     @GetMapping("/{id}")
     public ResponseEntity<MarkerDataForClient> getMarkerByIdAsJson(@PathVariable("id") Long id) {
         System.out.println("\n****************************   Marker ID Request Received     ****************************");
-        Optional<Marker> marker = markerRepository.findById(id);
-        return marker.map(Marker::toMarkerData)
+        if (id != null){
+            Optional<Marker> marker = markerRepository.findById(id);
+            return marker.map(Marker::toMarkerData)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/user/{user_id}")
@@ -102,7 +105,7 @@ public class MarkerController {
         System.out.println("\n****************************   Marker Deletion Request Received     ****************************");
 
         Map<String, Object> response = new HashMap<>();
-        if (markerRepository.existsById(id)) {
+        if (id != null && markerRepository.existsById(id)) {
             markerRepository.deleteById(id);
 
             response.put("deleted_marker_id", id);

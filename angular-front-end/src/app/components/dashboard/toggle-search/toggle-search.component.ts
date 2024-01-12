@@ -7,7 +7,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 })
 export class ToggleSearchComponent {
 
-  @Output() notifyDashboard: EventEmitter<any> = new EventEmitter<any>();
+  @Output() notifyDashboardToggle: EventEmitter<any> = new EventEmitter<any>();
 
   switchValue: string = 'T';
   description: string = '';
@@ -18,7 +18,7 @@ export class ToggleSearchComponent {
   }
 
   switchSearch() {
-    this.notifyDashboard.emit();
+    this.notifyDashboardToggle.emit();
   }
 
   getDescription(){
