@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { AuthService } from 'src/app/services/auth.service';
 import { MarkerService } from 'src/app/services/marker.service';
 
 @Component({
@@ -14,8 +15,11 @@ export class UserTableComponent {
   pagedMarkerInfos: any[] = [];
   pageSize: number = 10;
   currentPage: number = 1;
+  currentUser: string = '';
 
-  constructor(private markerService: MarkerService){  }
+  constructor(private markerService: MarkerService, public authService: AuthService){
+    this.currentUser = this.authService.currentUserName;
+  }
 
   pageChanged(event: any): void {
     this.currentPage = event;
