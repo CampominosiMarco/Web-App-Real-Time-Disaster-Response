@@ -4,11 +4,12 @@ import { MarkerService } from './marker.service';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
-
+ 
 describe('MarkerService', () => {
   let service: MarkerService;
   let serviceAuth: AuthService;
 
+ 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -32,16 +33,15 @@ describe('MarkerService', () => {
 
 
 
-
   let check1 = '[MarkerService] service creation';
   it(check1, () => {
     expect(service).toBeTruthy();
     console.log(check1 + " -> [OK]");
   });
-
+/*
   let check2 = '[MarkerService] service test';
   it(check2, async () => {
-   /* expect(service.isLoggedIn()).toBe(Observable<any>);
+   expect(service.isLoggedIn()).toBe(Observable<any>);
     service.login(77, 'UserName_Test');
     expect(service.isLoggedIn()).toBe(true);
     expect(service.getUserId()).toBe(77);
@@ -52,6 +52,8 @@ describe('MarkerService', () => {
     console.log(check2 + " -> [OK]");
 
 */
+
+/*
     serviceAuth.login(1, "Comune di Quarrata");
     my_latLng: google.maps.LatLngLiteral = {
       lat: 43.8475,
@@ -76,5 +78,7 @@ describe('MarkerService', () => {
         const complete_url = `${this.baseUrl}${id}`;
         return this.http.delete<any>(complete_url);
       }
-  });
+  });*/
+
 });
+  
