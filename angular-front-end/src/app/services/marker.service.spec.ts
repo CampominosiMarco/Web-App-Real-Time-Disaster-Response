@@ -1,10 +1,51 @@
-import { TestBed } from '@angular/core/testing';
+
+
+
+
 
 import { MarkerService } from './marker.service';
-import { Observable } from 'rxjs';
-import { AuthService } from './auth.service';
 
- 
+import { AuthService } from './auth.service';
+import { HttpClientModule } from '@angular/common/http';
+
+
+
+import { TestBed, inject } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClient } from '@angular/common/http';
+
+
+
+export class MockLatLng implements google.maps.LatLng {
+  constructor(private lats: number, private lngs: number) {}
+  toJSON(): google.maps.LatLngLiteral {
+    throw new Error('Method not implemented.');
+  }
+  toUrlValue(precision?: number | undefined): string {
+    throw new Error('Method not implemented.');
+  }
+
+  equals(other: google.maps.LatLng): boolean {
+    return this.lats === other.lat() && this.lngs === other.lng();
+  }
+
+  lat(): number {
+    return this.lats;
+  }
+
+  lng(): number {
+    return this.lngs;
+  }
+
+  toString(): string {
+    return `MockLatLng: (${this.lat}, ${this.lng})`;
+  }
+}
+
+
+
+
+
 describe('MarkerService', () => {
   let service: MarkerService;
   let serviceAuth: AuthService;
@@ -16,19 +57,11 @@ describe('MarkerService', () => {
         MarkerService,
         AuthService,
       ],
+      imports: [ HttpClientModule ]
     });
     service = TestBed.inject(MarkerService);
     serviceAuth = TestBed.inject(AuthService);
   });
-
-
-
-
-
-
-
-
-
 
 
 
@@ -38,47 +71,56 @@ describe('MarkerService', () => {
     expect(service).toBeTruthy();
     console.log(check1 + " -> [OK]");
   });
-/*
+
+
+
+
+
   let check2 = '[MarkerService] service test';
   it(check2, async () => {
-   expect(service.isLoggedIn()).toBe(Observable<any>);
-    service.login(77, 'UserName_Test');
-    expect(service.isLoggedIn()).toBe(true);
-    expect(service.getUserId()).toBe(77);
-    expect(service.getUserName()).toBe('UserName_Test');
-    expect(service.isAdmin()).toBe(false);
-    service.logout();
-    expect(service.isLoggedIn()).toBe(false);
-    console.log(check2 + " -> [OK]");
 
-*/
 
-/*
+
     serviceAuth.login(1, "Comune di Quarrata");
-    my_latLng: google.maps.LatLngLiteral = {
-      lat: 43.8475,
-      lng: 10.9777
-    };
-    service.saveMarker(true, 'Test Desription', '', my_latLng);
+ //   const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
 
 
-
-
+    var my_latLng = new MockLatLng(1, 2);
     
-      getAllMarkers(): Observable<any[]> {
-        return this.http.get<any[]>(this.markersUrl);
-      }
+    console.log(my_latLng);
     
-      getMarkerByUser(userId: number): Observable<any> {
-        const complete_url = `${this.userUrl}${userId}`;
-        return this.http.get<any[]>(complete_url);
-      }
-      
-      deleteMarkerById(id: number): Observable<any> {
-        const complete_url = `${this.baseUrl}${id}`;
-        return this.http.delete<any>(complete_url);
-      }
-  });*/
+    expect(service.getAllMarkers()).toBeTruthy();
+
+
+
+    var new_id: number = -1;
+
+    console.log(new_id);
+
+    expect(service.saveMarker(true, 'Test Description', '', my_latLng).subscribe((response: any) => {
+      new_id = response.marker_id;
+    })).toBeTruthy();
+
+
+    console.log(new_id);
+
+    service.getMarkerByUser(1).subscribe((response: any) => {
+      const markerWithId = response.find((marker: any) => marker.id === new_id);
+      expect(markerWithId).toBeDefined();
+      expect(markerWithId.getDescription()).toBe('Test Description');
+    });
+
+    console.log(new_id);
+    service.updateMarkerDescription(new_id, 'NEW Test Description').subscribe((response: any) => {
+      expect(response.updated_marker_id).toBe(new_id);
+    });
+
+    console.log(new_id);
+    service.deleteMarkerById(new_id).subscribe((response: any) => {
+      expect(response.deleted_marker_id).toBe(new_id);
+    });
+    console.log(new_id);
+  });
 
 });
   

@@ -1,7 +1,9 @@
 <div class="container">
 
-  <h3>Marcatori di {{currentUser}}</h3>
+  <h5>I tuoi marcatori sulla mappa</h5>
 
+  <br>
+  
   <table>
     <thead>
       <tr>
@@ -18,7 +20,7 @@
         <td>{{ markerInfo.id }}</td>
         <td><img src="{{ markerInfo.icon }}" alt="" class="icon"></td>
         <td class="description">{{ markerInfo.description }}</td>
-        <td><img src="assets/Edit.png" alt="" class="actions" (click)="onEditClick(markerInfo.id)"></td>
+        <td><img src="assets/Edit.png" alt="" class="actions" (click)="onEditClick(markerInfo.id, markerInfo.description)"></td>
         <td><img src="assets/Delete.png" alt="" class="actions" (click)="onDeleteClick(markerInfo.id)"></td>
       </tr>
     </tbody>

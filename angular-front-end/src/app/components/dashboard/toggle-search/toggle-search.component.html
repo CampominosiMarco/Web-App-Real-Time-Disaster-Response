@@ -18,7 +18,7 @@
     </div>
 
     <div class="search-group">
-        <input type="text" id="inputDescription" placeholder="Cosa stai cercando?" [(ngModel)]="description">
+        <input type="text" id="inputDescription" placeholder="Cosa stai cercando?" [(ngModel)]="description" (keyup.enter)="switchSearch()">
 
         <button type="submit" class="btn btn-primary" (click)="switchSearch()">Cerca</button>
     </div>

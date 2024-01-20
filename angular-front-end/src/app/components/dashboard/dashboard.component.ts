@@ -18,6 +18,7 @@ export class DashboardComponent implements OnInit {
 
   map: google.maps.Map | null = null;
   real_markers: google.maps.Marker[] = [];
+  visible_markers_id: number[] = [];
 
   center: google.maps.LatLngLiteral = {
     lat: 43.8475,
@@ -87,6 +88,14 @@ export class DashboardComponent implements OnInit {
       }
     });
 
+
+    this.map.addListener('idle', (event: google.maps.MapMouseEvent) => {
+      this.updateVisibleMarkers();
+    });
+
+
+
+
     if (this.map) {
       this.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
       this.fetchMarkers();
@@ -104,6 +113,9 @@ export class DashboardComponent implements OnInit {
         this.markers_from_db.forEach((markerInfo: any) => {
           this.addMarkerOnMap(markerInfo);
         });
+
+        //this.updateTable();
+        this.updateVisibleMarkers();
       });
   }
 
@@ -159,7 +171,7 @@ export class DashboardComponent implements OnInit {
             console.log("New marker ID: " + response.marker_id);
 
             if (this.currentlatLng != null){
-              this.fetchMarkers();
+              this.refreshMap();
             }
         });
       }
@@ -171,7 +183,7 @@ export class DashboardComponent implements OnInit {
     this.toggleSearchComponent.reset();
 
     this.fetchMarkers();
-    this.updateTable();
+  //  this.updateTable();
   }
 
   removeAllMarkers() {
@@ -184,16 +196,22 @@ export class DashboardComponent implements OnInit {
   updateTable(){
     this.markerService.getMarkerByUser(this.authService.currentUserId)
         .subscribe((data: any[]) => {
-          data.forEach((markerInfo: any) => {
-            markerInfo.icon = this.iconLetterToLink(markerInfo.icon);
-         //   markerInfo.description = markerInfo.description.replaceAll("\n", "<br>")
+
+          const filteredData = data.filter((markerInfo: any) => {
+            return this.visible_markers_id.includes(markerInfo.id);
           });
-          this.userTableComponent.setMarkerInfos(data);
+
+          filteredData.forEach((markerInfo: any) => {
+            markerInfo.icon = this.iconLetterToLink(markerInfo.icon);
+        //   markerInfo.description = markerInfo.description.replaceAll("\n", "<br>")
+          });
+
+          this.userTableComponent.setCurrentPage(1);
+          this.userTableComponent.setMarkerInfos(filteredData);
         });
   }
 
   userTableAction(): void {
-    console.log("entrato");
     this.refreshMap();
   }
 
@@ -275,5 +293,48 @@ export class DashboardComponent implements OnInit {
         this.addMarkerOnMap(markerInfo);
       }
     });
+
+
+    this.updateVisibleMarkers();
   }
+
+
+
+  updateVisibleMarkers() {
+    if (this.map){
+
+      this.visible_markers_id = [];
+
+      var bounds = this.map.getBounds();
+
+      this.real_markers.forEach((marker) => {
+        var pos = marker.getPosition();
+  
+        if (bounds && pos !== null && pos !== undefined && bounds.contains(pos)) {
+
+
+          
+
+          
+          var title = marker.getTitle();
+          if (title !== null && title !== undefined){
+
+            const match = title.match(/\[ID_(\d+)\]/);
+
+            if (match) {
+              this.visible_markers_id.push(parseInt(match[1], 10));
+            }
+
+
+          }
+
+        }
+      });
+      
+      //console.log(this.visible_markers_id);
+      this.updateTable();
+    }
+
+  }
+
 }

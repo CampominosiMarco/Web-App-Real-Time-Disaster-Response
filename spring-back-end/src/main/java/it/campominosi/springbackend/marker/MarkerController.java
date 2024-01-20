@@ -112,7 +112,36 @@ public class MarkerController {
             System.out.println("Marker deleted: " + response.get("deleted_marker_id"));
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
-            response.put("error", "Not Found");
+            response.put("error", "Marker not Found");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateMarkerDescription(@PathVariable("id") Long id, @RequestBody String newDescription) {
+        System.out.println("\n****************************   Marker Update Request Received     ****************************");
+
+        Map<String, Object> response = new HashMap<>();
+
+
+        if (id != null && markerRepository.existsById(id)) {
+            Optional<Marker> optionalMarker = markerRepository.findById(id);
+            Marker marker = optionalMarker.get();
+
+
+            if (newDescription != null) {
+                marker.setDescription(newDescription);
+                markerRepository.save(marker);
+
+                response.put("updated_marker_id", id);
+                System.out.println("Marker updated: " + response.get("updated_marker_id"));
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            response.put("error", "Marker not found");
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }

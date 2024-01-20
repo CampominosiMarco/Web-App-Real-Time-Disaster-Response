@@ -49,4 +49,10 @@ export class MarkerService {
     const complete_url = `${this.baseUrl}${id}`;
     return this.http.delete<any>(complete_url);
   }
+
+  updateMarkerDescription(id: number, newDescription: string): Observable<any> {
+    const complete_url = `${this.baseUrl}${id}`;
+    return this.http.put<any>(complete_url, newDescription);
+  }
+  
 }

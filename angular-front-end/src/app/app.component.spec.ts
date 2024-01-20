@@ -13,22 +13,11 @@ describe('AppComponent', () => {
     declarations: [AppComponent, NavbarComponent, FooterComponent, Logo512Component, LogoCompleteComponent]
   }));
 
-  it('should create the app', () => {
+  let check1 = '[AppComponent] App creation';
+  it(check1, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
+    console.log(check1 + " -> [OK]");
   });
-/*
-  it(`should have as title 'TEST Titolo'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('TEST Titolo');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('Full Stack Example');
-  });*/
 });
