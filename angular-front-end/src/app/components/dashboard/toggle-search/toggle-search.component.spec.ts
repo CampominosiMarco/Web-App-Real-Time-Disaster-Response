@@ -26,21 +26,21 @@ describe('ToggleSearchComponent', () => {
     expect(component).toBeTruthy();
     console.log(check1 + " -> [OK]");
   });
-    /*
+    
   let check2 = '[ToggleSearchComponent] Switch and Description test';
   it(check2, () => {
 
-    component.switchValue = 'T';
+    component.setValue('T');
     fixture.detectChanges();
     let radioElement: HTMLInputElement = fixture.nativeElement.querySelector('#switch-T');
     expect(radioElement.checked).toBe(true);
 
-    component.switchValue = 'R';
+    component.setValue('R');
     fixture.detectChanges();
     radioElement = fixture.nativeElement.querySelector('#switch-R');
     expect(radioElement.checked).toBe(true);
  
-    component.switchValue = 'G';
+    component.setValue('G');
     fixture.detectChanges();
     radioElement = fixture.nativeElement.querySelector('#switch-O');
     expect(radioElement.checked).toBe(true);
@@ -86,5 +86,5 @@ describe('ToggleSearchComponent', () => {
 
     console.log(check2 + " -> [OK]");
   });
-*/
+
 });

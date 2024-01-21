@@ -17,35 +17,31 @@ export class DashboardComponent implements OnInit {
   @ViewChild(UserTableComponent) userTableComponent!: UserTableComponent;
 
   map: google.maps.Map | null = null;
-  real_markers: google.maps.Marker[] = [];
-  visible_markers_id: number[] = [];
-
-  center: google.maps.LatLngLiteral = {
-    lat: 43.8475,
-    lng: 10.9777
-  };
-  zoom = 13;
-
-/*
-  display: google.maps.LatLngLiteral = {
-    lat: this.center.lat,
-    lng: this.center.lng
-  };
-*/
+  real_markers_on_map: google.maps.Marker[] = [];
 
   markers_from_db: any[] = [];
   showMarkerForm: boolean = false;
   currentlatLng: google.maps.LatLng | undefined;
 
+  only_visible_markers_id: number[] = [];
+  user_markers_for_table: any[] = [];
+
+  center: google.maps.LatLngLiteral = {
+    lat: 43.8475,
+    lng: 10.9777
+  };
+  zoom = 12;
+
   constructor(private authService: AuthService,
               private router: Router,
               private markerService: MarkerService) {
+
     if (!this.authService.isLoggedIn()){
       this.router.navigate(['/login']);
     }else{
       this.initMap();
-      this.updateTable();
     }
+
   }
 
   ngOnInit(): void {
@@ -53,23 +49,13 @@ export class DashboardComponent implements OnInit {
   }
 
   async initMap(): Promise<void> {
+
     const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
     this.map = new Map(document.getElementById("map") as HTMLElement, {
       center: this.center,
       zoom: this.zoom,
       disableDoubleClickZoom: true
     });
-
-  /*
-    //Listener mouse
-    this.map.addListener('mousemove', (event: google.maps.MapMouseEvent) => {
-      const latLng = event.latLng; 
-
-      if (latLng != null) {
-        this.display = (latLng.toJSON());
-      }
-    });
-  */
 
     //Listener double click
     this.map.addListener('dblclick', (event: google.maps.MapMouseEvent) => {
@@ -83,18 +69,13 @@ export class DashboardComponent implements OnInit {
 
         this.currentlatLng = latLng;
         this.showMarkerForm = true;
-
-        
       }
     });
 
-
+    //Listener on Map view
     this.map.addListener('idle', (event: google.maps.MapMouseEvent) => {
       this.updateVisibleMarkers();
     });
-
-
-
 
     if (this.map) {
       this.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
@@ -102,21 +83,29 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  //Method to get all markers and user markers
   fetchMarkers(): void {
     this.removeAllMarkers();
     
-    this.markerService.getAllMarkers()
-      .subscribe((data: any[]) => {
+    this.markerService.getAllMarkers().subscribe((data: any[]) => {
         this.markers_from_db = data;
-        //console.log('Markers da DB:', this.markers_from_db);
 
         this.markers_from_db.forEach((markerInfo: any) => {
           this.addMarkerOnMap(markerInfo);
         });
 
-        //this.updateTable();
-        this.updateVisibleMarkers();
-      });
+        //This is the way to get less information event from server
+        this.markerService.getMarkerByUser(this.authService.currentUserId).subscribe((data_user: any[]) => {
+          this.user_markers_for_table = data_user;
+
+          this.user_markers_for_table.forEach((markerInfo: any) => {
+            markerInfo.icon = this.iconLetterToLink(markerInfo.icon);
+        //  markerInfo.description = markerInfo.description.replaceAll("\n", "<br>")
+          });
+
+          this.updateVisibleMarkers();
+        });
+    });
   }
 
   addMarkerOnMap(markerInfo: any): void {
@@ -156,19 +145,16 @@ export class DashboardComponent implements OnInit {
           infoWindow.open(this.map, temp_marker);
       });
 
-      this.real_markers.push(temp_marker);
+      this.real_markers_on_map.push(temp_marker);
     }
   }
 
+  //This is the method to get informations from form
   receiveFormData(formData: any) {
-    //console.log('Form data:', formData);
-
     if (formData.reset !== 'user_reset'){
       if (this.currentlatLng != null){
-        this.markerService.saveMarker(formData.allowContactInfo, formData.description, formData.selectedIcon, this.currentlatLng)
-          .subscribe((response: any) => {
-
-            console.log("New marker ID: " + response.marker_id);
+        this.markerService.saveMarker(formData.allowContactInfo, formData.description, formData.selectedIcon, this.currentlatLng).subscribe((response: any) => {
+            //console.log("New marker ID: " + response.marker_id);
 
             if (this.currentlatLng != null){
               this.refreshMap();
@@ -179,38 +165,32 @@ export class DashboardComponent implements OnInit {
     this.showMarkerForm = false;
   }
 
+  //To show all markers on map
   refreshMap(){
     this.toggleSearchComponent.reset();
-
     this.fetchMarkers();
-  //  this.updateTable();
   }
 
+  //Removes all markers on map. After we can show only what we need
   removeAllMarkers() {
-    for (let i = 0; i < this.real_markers.length; i++) {
-      this.real_markers[i].setMap(null);
+    for (let i = 0; i < this.real_markers_on_map.length; i++) {
+      this.real_markers_on_map[i].setMap(null);
     }
-    this.real_markers = [];
+    this.real_markers_on_map = [];
   }
 
+  //Filter for user markers visible on map
   updateTable(){
-    this.markerService.getMarkerByUser(this.authService.currentUserId)
-        .subscribe((data: any[]) => {
+    const filteredData = this.user_markers_for_table.filter((markerInfo: any) => {
+      return this.only_visible_markers_id.includes(markerInfo.id);
+    });
 
-          const filteredData = data.filter((markerInfo: any) => {
-            return this.visible_markers_id.includes(markerInfo.id);
-          });
-
-          filteredData.forEach((markerInfo: any) => {
-            markerInfo.icon = this.iconLetterToLink(markerInfo.icon);
-        //   markerInfo.description = markerInfo.description.replaceAll("\n", "<br>")
-          });
-
-          this.userTableComponent.setCurrentPage(1);
-          this.userTableComponent.setMarkerInfos(filteredData);
-        });
+    this.userTableComponent.setCurrentPage(1);
+    this.userTableComponent.setMarkerInfos(filteredData);
   }
 
+  //This is a method called from child. See also EventEmitter in child and listener in HTML
+  //This method is needed to get udpate and delete from table event (PUT and DELETE for server)
   userTableAction(): void {
     this.refreshMap();
   }
@@ -248,8 +228,9 @@ export class DashboardComponent implements OnInit {
     }
     return link;
   }
-    
-//This is methods called from child. See also EventEmitter in child and listener in HTML
+
+  //This is a method called from child. See also EventEmitter in child and listener in HTML
+  //It filters markers on map for a better user experience
   onToggleSearchEvent() {
 
     this.removeAllMarkers();
@@ -259,82 +240,67 @@ export class DashboardComponent implements OnInit {
 
     this.markers_from_db.forEach((markerInfo: any) => {
 
-      let save = false;
-      const id = 'ID_' + markerInfo.id;
+      let show = false;
+      const id = 'ID_' + markerInfo.id; //This is necessary because markerInfo.id daesn't include "ID_" 
 
       if (markerDescription != ''){
 
+        //email and mobile are optional info
         if (markerInfo.userEmail && markerInfo.userMobile) {
-          if (id.includes(markerDescription) || markerInfo.userName.toUpperCase().includes(markerDescription) ||
-              markerInfo.userEmail.toUpperCase().includes(markerDescription) || markerInfo.userMobile.includes(markerDescription) ||
+          if (id.includes(markerDescription) ||
+              markerInfo.userName.toUpperCase().includes(markerDescription) ||
+              markerInfo.userEmail.toUpperCase().includes(markerDescription) ||
+              markerInfo.userMobile.includes(markerDescription) ||
               markerInfo.description.toUpperCase().includes(markerDescription)){
 
-            if(markerLetter == 'T' || markerInfo.icon == markerLetter){
-              save = true;
-            }
+                show = (markerLetter == 'T' || markerInfo.icon == markerLetter);
           }
         }else{
-          if (id.includes(markerDescription) || markerInfo.userName.toUpperCase().includes(markerDescription) ||
+          if (id.includes(markerDescription) ||
+              markerInfo.userName.toUpperCase().includes(markerDescription) ||
               markerInfo.description.toUpperCase().includes(markerDescription)){
 
-            if(markerLetter == 'T' || markerInfo.icon == markerLetter){
-              save = true;
-            }
+                show = (markerLetter == 'T' || markerInfo.icon == markerLetter);
           }
         }
 
       }else{
-        if(markerLetter == 'T' || markerInfo.icon == markerLetter){
-          save = true;
-        }
+        //This option filters only by icon
+        show = (markerLetter == 'T' || markerInfo.icon == markerLetter);
       }
 
-      if (save){
+      if (show){
         this.addMarkerOnMap(markerInfo);
       }
     });
 
-
     this.updateVisibleMarkers();
   }
 
-
-
+  //With this method we can get visible markers array id always updated
+  //It extract ID from marker's title
   updateVisibleMarkers() {
     if (this.map){
-
-      this.visible_markers_id = [];
-
+      this.only_visible_markers_id = [];
       var bounds = this.map.getBounds();
 
-      this.real_markers.forEach((marker) => {
+      this.real_markers_on_map.forEach((marker) => {
         var pos = marker.getPosition();
   
         if (bounds && pos !== null && pos !== undefined && bounds.contains(pos)) {
-
-
-          
-
-          
-          var title = marker.getTitle();
-          if (title !== null && title !== undefined){
-
-            const match = title.match(/\[ID_(\d+)\]/);
+          var temp_title = marker.getTitle();
+          if (temp_title !== null && temp_title !== undefined){
+            const match = temp_title.match(/\[ID_(\d+)\]/);
 
             if (match) {
-              this.visible_markers_id.push(parseInt(match[1], 10));
+              this.only_visible_markers_id.push(parseInt(match[1], 10));
             }
-
-
           }
-
         }
       });
       
-      //console.log(this.visible_markers_id);
       this.updateTable();
     }
-
   }
 
 }

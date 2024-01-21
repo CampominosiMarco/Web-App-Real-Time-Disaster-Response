@@ -8,11 +8,10 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class MarkerService {
-  private baseUrl = 'http://localhost:8081/markers/';      //TODO aggiornare url
-  private saveUrl = this.baseUrl + 'add';                 //TODO aggiornare url
-  private markersUrl = this.baseUrl + 'all';              //TODO aggiornare url
-  private userUrl = this.baseUrl + 'user/';               //TODO aggiornare url
-
+  private baseUrl = 'http://localhost:8081/markers/';
+  private saveUrl = this.baseUrl + 'add';
+  private markersUrl = this.baseUrl + 'all';
+  private userUrl = this.baseUrl + 'user/';
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 

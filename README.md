@@ -86,10 +86,13 @@ Please read these documentation to install google-maps (`npm i @angular/google-m
 
 
 
-npm install @types/googlemaps --save-dev
+npm install @types/google.maps --save-dev
 Add googlemaps to the types array in both files tsconfig.app.json respectively in tsconfig.spec.json (save both files)
 "types": ["google.maps"]
 
+
+
+per testare google.maps è necessario un MOCK, vedi (export class MockLatLng implements google.maps.LatLng)
 
 
 <br>
@@ -111,6 +114,3 @@ This example comprises only the essential Entities, Controllers, and Repositorie
 ng add @angular/material
 ng add ngx-pagination
 
-mancano i test per 
-marker service
-e tutta la dashboard

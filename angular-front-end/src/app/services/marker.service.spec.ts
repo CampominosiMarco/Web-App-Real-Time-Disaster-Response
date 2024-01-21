@@ -1,26 +1,18 @@
-
-
-
-
-
 import { MarkerService } from './marker.service';
 
 import { AuthService } from './auth.service';
 import { HttpClientModule } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
 
-
-
-import { TestBed, inject } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HttpClient } from '@angular/common/http';
-
-
-
+//This is the way to use google.maps.LatLng
 export class MockLatLng implements google.maps.LatLng {
+
   constructor(private lats: number, private lngs: number) {}
+
   toJSON(): google.maps.LatLngLiteral {
     throw new Error('Method not implemented.');
   }
+  
   toUrlValue(precision?: number | undefined): string {
     throw new Error('Method not implemented.');
   }
@@ -42,15 +34,12 @@ export class MockLatLng implements google.maps.LatLng {
   }
 }
 
-
-
-
-
 describe('MarkerService', () => {
   let service: MarkerService;
   let serviceAuth: AuthService;
 
- 
+  var my_latLng = new MockLatLng(1, 2);
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
@@ -61,10 +50,9 @@ describe('MarkerService', () => {
     });
     service = TestBed.inject(MarkerService);
     serviceAuth = TestBed.inject(AuthService);
+
+    serviceAuth.login(1, "Comune di Quarrata");
   });
-
-
-
 
   let check1 = '[MarkerService] service creation';
   it(check1, () => {
@@ -72,55 +60,53 @@ describe('MarkerService', () => {
     console.log(check1 + " -> [OK]");
   });
 
-
-
-
-
-  let check2 = '[MarkerService] service test';
-  it(check2, async () => {
-
-
-
-    serviceAuth.login(1, "Comune di Quarrata");
- //   const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
-
-
-    var my_latLng = new MockLatLng(1, 2);
-    
-    console.log(my_latLng);
-    
-    expect(service.getAllMarkers()).toBeTruthy();
-
-
-
-    var new_id: number = -1;
-
-    console.log(new_id);
-
-    expect(service.saveMarker(true, 'Test Description', '', my_latLng).subscribe((response: any) => {
-      new_id = response.marker_id;
-    })).toBeTruthy();
-
-
-    console.log(new_id);
-
-    service.getMarkerByUser(1).subscribe((response: any) => {
-      const markerWithId = response.find((marker: any) => marker.id === new_id);
-      expect(markerWithId).toBeDefined();
-      expect(markerWithId.getDescription()).toBe('Test Description');
+  let check2 = '[MarkerService] service test: ALL markers not null';
+  it(check2, (done) => {
+    service.getAllMarkers().subscribe((response: any) => {
+      expect(response[0].id).toEqual(jasmine.any(Number));
+      expect(response[0].id).toBeGreaterThan(0);
+      console.log(check2 + " -> [OK]");
+      done();
     });
-
-    console.log(new_id);
-    service.updateMarkerDescription(new_id, 'NEW Test Description').subscribe((response: any) => {
-      expect(response.updated_marker_id).toBe(new_id);
-    });
-
-    console.log(new_id);
-    service.deleteMarkerById(new_id).subscribe((response: any) => {
-      expect(response.deleted_marker_id).toBe(new_id);
-    });
-    console.log(new_id);
   });
 
+  let check3 = '[MarkerService] service test: CREATE - READ BY USER - UPDATE - DELETE';
+  it(check3, (all_done) => {
+    const my_description = 'Test Description';
+    
+    service.saveMarker(true, my_description, '', my_latLng).subscribe((response: any) => {
+      const new_id = response.marker_id;
+      expect(new_id).toEqual(jasmine.any(Number));
+      expect(new_id).toBeGreaterThan(0);
+
+      console.log("CREATE -> [OK]");
+      console.log(response);
+
+      service.getMarkerByUser(serviceAuth.getUserId()).subscribe((response2: any) => {
+        const markerWithUserId = response2.find((marker: any) => marker.id === new_id);
+        expect(markerWithUserId.id).toEqual(jasmine.any(Number));
+        expect(markerWithUserId.id).toBeGreaterThan(0);
+        expect(markerWithUserId.description).toBe(my_description);
+
+        console.log("READ BY USER -> [OK]");
+
+        const my_new_description = 'NEW Test Description';
+
+        service.updateMarkerDescription(new_id, my_new_description).subscribe((response3: any) => {
+          expect(response3.updated_marker_id).toBe(new_id);
+
+          console.log("UPDATE -> [OK]");
+          console.log(response3);
+
+          service.deleteMarkerById(new_id).subscribe((response4: any) => {
+            expect(response4.deleted_marker_id).toBe(new_id);
+            
+            console.log("DELETE -> [OK]");
+            
+            all_done();
+          });
+        });
+      });
+    });
+  });
 });
-  

@@ -6,11 +6,6 @@
     "types": [
       "jasmine", "google.maps"
     ],
-    "typeRoots": [
-      "node_modules/@types",
-    ],
-/*    "skipLibCheck": true,
-    */
   },
   "include": [
     "src/**/*.spec.ts",
