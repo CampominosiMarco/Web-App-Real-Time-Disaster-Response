@@ -89,7 +89,7 @@ export class RegistrationComponent {
         primaryPassword: await this.hashPasswordService.hashPassword(this.formAll.get('pass.pass1')?.value + '')
       };
       
-      const url = 'http://localhost:8081/registration';   //TODO: update url backend side
+      const url = 'http://cm-innovationlab.it:5007/registration';   //TODO: update url backend side
       const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
       this.http.post(url, formDataJSON, { headers })

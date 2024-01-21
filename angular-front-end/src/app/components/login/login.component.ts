@@ -25,7 +25,7 @@ export class LoginComponent {
   onSubmit(){
     if (this.logUser && this.logPassword) {
 
-      const url = 'http://localhost:8081/login';      //TODO aggiornare url
+      const url = 'http://cm-innovationlab.it:5007/login';
 
       const dataToSendJSON = {
         name: this.logUser,

@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class MarkerService {
-  private baseUrl = 'http://localhost:8081/markers/';
+  private baseUrl = 'http://cm-innovationlab.it:5007/markers/';
   private saveUrl = this.baseUrl + 'add';
   private markersUrl = this.baseUrl + 'all';
   private userUrl = this.baseUrl + 'user/';
