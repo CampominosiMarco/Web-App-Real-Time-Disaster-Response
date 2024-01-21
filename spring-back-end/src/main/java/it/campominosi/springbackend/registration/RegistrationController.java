@@ -29,32 +29,25 @@ public class RegistrationController {
 
     @PostMapping
     public ResponseEntity<Object> handleRegistration(@RequestBody String requestBody) {
-        System.out.println("\n****************************    Request Received     ****************************");
-        //System.out.println(requestBody);
+        System.out.print(".:.    Registration POST Request Received: ");
 
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> response = new HashMap<>();
-        User userData = null;
 
         try {
-            userData = objectMapper.readValue(requestBody, User.class);
-            System.out.println("****************************    Object Mapper     ****************************");
-            //System.out.println(userData);
-        } catch (Exception e) {
-            System.err.println("****************************    User Mapper Exception     ****************************\n" + e);
-        }
+            User userData = objectMapper.readValue(requestBody, User.class);
 
-        System.out.println("****************************    Saving in Database...     ****************************");
-        try {
+            if (userData == null) {
+                response.put("error", "User Mapper error");
+                System.out.println(response.get("error"));
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }
+
             User savedUser = userRepository.save(userData);
-            System.out.println("****************************    Registration COMPLETED: new user ID" + savedUser.getId() + "     ****************************");
-
-            //response.put("status", "OK");
             response.put("user_id", savedUser.getId());
+            System.out.println("Registration completed for user: " + response.get("user_id"));
             return new ResponseEntity<>(response, HttpStatus.OK);
-
         } catch (DataIntegrityViolationException e1) {
-            System.out.println("****************************    Registration FAILED:     ****************************\n" + e1);
 
             String errorMessageSQL = "";
             Throwable rootCause = e1.getRootCause();
@@ -65,15 +58,13 @@ public class RegistrationController {
                 }
             }
 
-            //response.put("status", "ERROR");
             response.put("error", errorMessageSQL);
+            System.out.println(response.get("error"));
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             
         } catch (Exception e2) {
-            System.err.println("****************************    Registration FAILED:     ****************************\n" + e2);
-            
-            //response.put("status", "ERROR");
             response.put("error", e2);
+            System.out.println(response.get("error"));
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }

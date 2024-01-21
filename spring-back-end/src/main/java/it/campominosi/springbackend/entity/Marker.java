@@ -43,6 +43,7 @@ public class Marker {
                     @JsonProperty("description") String description,
                     @JsonProperty("icon") String icon,
                     @JsonProperty("position") String position) {
+
         this.consent = consent;
         this.description = description;
         this.icon = icon;
@@ -158,7 +159,7 @@ public class Marker {
         return markerData;
     }
 
-   private Map<String, Double> parsePosition(String position) {
+    private Map<String, Double> parsePosition(String position) {
         Map<String, Double> parsedPosition = new HashMap<>();
         try {
             JSONObject jsonObject = new JSONObject(position);

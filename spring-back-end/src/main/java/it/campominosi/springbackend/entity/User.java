@@ -44,6 +44,7 @@ public class User {
                 @JsonProperty("primaryEmail") String email,
                 @JsonProperty("mobile") String mobile,
                 @JsonProperty("primaryPassword") String password) {
+                    
         this.name = name;
         this.email = email;
         this.mobile = mobile;

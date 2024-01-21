@@ -2,6 +2,10 @@ package it.campominosi.springbackend.classes;
 
 import java.util.Map;
 
+/************************************************************************************
+ * This class is useful to send back to client only information needed
+ ************************************************************************************/
+
 public class MarkerDataForClient {
     private Long id;
     private String userName;
@@ -70,5 +74,4 @@ public class MarkerDataForClient {
     public void setPosition(Map<String, Double> position) {
         this.position = position;
     }
-
 }

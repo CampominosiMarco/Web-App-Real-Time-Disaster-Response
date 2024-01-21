@@ -33,8 +33,7 @@ public class MarkerController {
 
     @PostMapping("/add")
     public ResponseEntity<Object> addMarker(@RequestBody String requestBody) {
-        System.out.println("\n****************************    ADD Request Received     ****************************");
-        //System.out.println(requestBody);
+        System.out.print(".:.    Marker POST ADD Request Received: ");
         
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> response = new HashMap<>();
@@ -43,18 +42,16 @@ public class MarkerController {
             Map<String, Object> requestData = objectMapper.readValue(requestBody, new TypeReference<Map<String,Object>>() {});
 
             Long userId = Long.parseLong(requestData.get("user_id").toString());
-            User user = userRepository.findById(userId).orElse(null);
-            if (user == null) {
+            User userInDB = userRepository.findById(userId).orElse(null);
+            if (userInDB == null) {
                 response.put("error", "User Not Found!");
+                System.out.println(response.get("error"));
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
             }
 
             requestData.remove("user_id");
             Marker markerDataFromRequestBody = objectMapper.convertValue(requestData, Marker.class);
-            markerDataFromRequestBody.setUser(user);
-
-            System.out.println("****************************    Object Mapper     ****************************");
-            //System.out.println(markerDataFromRequestBody);
+            markerDataFromRequestBody.setUser(userInDB);
 
             Marker savedMarker = markerRepository.save(markerDataFromRequestBody);
             response.put("marker_id", savedMarker.getId());
@@ -62,15 +59,15 @@ public class MarkerController {
             return new ResponseEntity<>(response, HttpStatus.OK);
 
         } catch (Exception e) {
-            System.err.println("****************************    Marker Exception     ****************************\n" + e);
             response.put("error", e);
+            System.out.println(response.get("error"));
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<MarkerDataForClient>> getAllMarkersAsJson() {
-        System.out.println("\n****************************   All Markers Request Received     ****************************");
+        System.out.println(".:.    Markers GET ALL Request Received    .:.");
         List<Marker> markers = markerRepository.findAll();
         List<MarkerDataForClient> markersData = markers.stream()
                 .map(Marker::toMarkerData) // Aggiungi il metodo toMarkerData in Marker
@@ -80,7 +77,7 @@ public class MarkerController {
     
     @GetMapping("/{id}")
     public ResponseEntity<MarkerDataForClient> getMarkerByIdAsJson(@PathVariable("id") Long id) {
-        System.out.println("\n****************************   Marker ID Request Received     ****************************");
+        System.out.println(".:.    Marker GET ID Request Received    .:.");
         if (id != null){
             Optional<Marker> marker = markerRepository.findById(id);
             return marker.map(Marker::toMarkerData)
@@ -92,7 +89,7 @@ public class MarkerController {
 
     @GetMapping("/user/{user_id}")
     public ResponseEntity<List<MarkerDataForClient>> getMarkerByUserAsJson(@PathVariable("user_id") Long id) {
-        System.out.println("\n****************************   Marker User Request Received     ****************************");
+        System.out.println(".:.    Markers GET USER ID Request Received    .:.");
         List<Marker> markers = markerRepository.findAllByUserId(id);
         List<MarkerDataForClient> markersData = markers.stream()
                 .map(Marker::toMarkerData)
@@ -102,7 +99,7 @@ public class MarkerController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteMarkerById(@PathVariable("id") Long id) {
-        System.out.println("\n****************************   Marker Deletion Request Received     ****************************");
+        System.out.print(".:.    Marker DELETE ID Request Received: ");
 
         Map<String, Object> response = new HashMap<>();
         if (id != null && markerRepository.existsById(id)) {
@@ -113,36 +110,30 @@ public class MarkerController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
             response.put("error", "Marker not Found");
+            System.out.println(response.get("error"));
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }
 
-
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateMarkerDescription(@PathVariable("id") Long id, @RequestBody String newDescription) {
-        System.out.println("\n****************************   Marker Update Request Received     ****************************");
+        System.out.print(".:.    Marker PUT ID Request Received: ");
 
         Map<String, Object> response = new HashMap<>();
-
-
-        if (id != null && markerRepository.existsById(id)) {
+        if (id != null && newDescription != null && markerRepository.existsById(id)) {
             Optional<Marker> optionalMarker = markerRepository.findById(id);
             Marker marker = optionalMarker.get();
 
+            marker.setDescription(newDescription);
+            markerRepository.save(marker);
 
-            if (newDescription != null) {
-                marker.setDescription(newDescription);
-                markerRepository.save(marker);
-
-                response.put("updated_marker_id", id);
-                System.out.println("Marker updated: " + response.get("updated_marker_id"));
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-            }
+            response.put("updated_marker_id", id);
+            System.out.println("Marker updated: " + response.get("updated_marker_id"));
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
-            response.put("error", "Marker not found");
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            response.put("error", "Marker not found or Bad Request");
+            System.out.println(response.get("error"));
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
 }

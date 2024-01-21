@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import it.campominosi.springbackend.entity.Marker;
 
-
 @Repository
 public interface MarkerRepository extends JpaRepository<Marker, Long> {
 

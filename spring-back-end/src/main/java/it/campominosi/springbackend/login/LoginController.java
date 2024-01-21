@@ -30,17 +30,13 @@ public class LoginController {
 
     @PostMapping
     public ResponseEntity<Object> handleLogin(@RequestBody String requestBody) {
-        System.out.println("\n****************************    Request Received     ****************************");
-        //System.out.println(requestBody);
+        System.out.print(".:.    Login POST Request Received: ");
 
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> response = new HashMap<>();
 
         try {
             User userDataFromRequestBody = objectMapper.readValue(requestBody, User.class);
-            System.out.println("****************************    Object Mapper     ****************************");
-            //System.out.println(userData);
-
             Optional<User> dbUserOptional = userRepository.findByName(userDataFromRequestBody.getName());
 
             if (dbUserOptional.isPresent()) {
@@ -52,28 +48,24 @@ public class LoginController {
                 BCrypt.Result isMatch = verifyer.verify(userDataFromRequestBody.getPassword().getBytes(), hashedPasswordFromDB.getBytes());
 
                 if (isMatch.verified) {
-              //      response.put("status", "OK");
                     response.put("user_id", user.getId());
                     response.put("user_name", user.getName());
                     System.out.println("Access for user: " + response.get("user_id"));
                     return new ResponseEntity<>(response, HttpStatus.OK);
                 } else {
-            //        response.put("status", "KO");
                     response.put("error", "Invalid credentials!");
                     System.out.println(response.get("error"));
                     return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
                 }
 
             } else {
-             //   response.put("status", "KO");
                 response.put("error", "User not found!");
                 System.out.println(response.get("error"));
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            System.err.println("****************************    User Mapper Exception     ****************************\n" + e);
-        //    response.put("status", "User Mapper Exception");
             response.put("error", e);
+            System.out.println(response.get("error"));
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
