@@ -36,25 +36,18 @@ export class UserTableComponent {
 
   onDeleteClick(id: number): void {
     this.markerService.deleteMarkerById(id).subscribe((response: any) => {
-  //    console.log("DELETED marker ID: " + response.deleted_marker_id);
       this.notifyDashboardUserTable.emit();
     });
   }
 
   onEditClick(id: number, old_description: string): void {
-
-
     const newDescription = window.prompt('Inserisci la nuova descrizione:', old_description);
 
     if (newDescription !== null) {  
       this.markerService.updateMarkerDescription(id, newDescription).subscribe((response: any) => {
-        // console.log("EDITED marker ID: " + response.updated_marker_id);
         this.notifyDashboardUserTable.emit();
       });
     }
-
-    
-
   }
 }
  

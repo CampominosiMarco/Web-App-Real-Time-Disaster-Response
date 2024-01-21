@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MarkerFormComponent } from './marker-form.component';
+import { FormsModule } from '@angular/forms';
 
 describe('MarkerFormComponent', () => {
   let component: MarkerFormComponent;
@@ -8,14 +8,18 @@ describe('MarkerFormComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [MarkerFormComponent]
+      declarations: [MarkerFormComponent],
+      imports: [ FormsModule ]
     });
     fixture = TestBed.createComponent(MarkerFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  let check1 = '[MarkerFormComponent] component creation';
+  it(check1, () => {
     expect(component).toBeTruthy();
+    console.log(check1 + " -> [OK]");
   });
+
 });
