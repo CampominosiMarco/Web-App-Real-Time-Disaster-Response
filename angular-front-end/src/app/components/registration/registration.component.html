@@ -145,7 +145,7 @@
 
                     <div class="form-check d-flex justify-content-center mb-5 form-group">
                       <input class="form-check-input me-2" type="checkbox" value="" id="checkBoxAgree" [formControl]="regUserAgree" formControlName="agree" required/>
-                      <label class="form-check-label" for="checkBoxAgree">Accetto i <a routerLink="conditions">Termini del Servizio</a></label>
+                      <label class="form-check-label" for="checkBoxAgree">Accetto i <span (click)="navigate()">Termini del Servizio</span></label>
                     </div>
 
 <!--  BUTTON  -->

@@ -106,7 +106,7 @@ export class RegistrationComponent {
           })
         )
         .subscribe((response) => {
-          console.log('Registration COMPLETED:\n', response);
+        //  console.log('Registration COMPLETED:\n', response);
           this.router.navigate(['/login']);
       });
     }
@@ -135,6 +135,10 @@ export class RegistrationComponent {
     if (this.regUserAgree.errors != null){
       console.warn("Agree:", this.regUserAgree.errors);
     }
+  }
+
+  navigate(){
+    this.router.navigate(['/conditions']);
   }
 }
 

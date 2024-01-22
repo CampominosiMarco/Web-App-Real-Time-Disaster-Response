@@ -36,11 +36,12 @@ export class DashboardComponent implements OnInit {
               private router: Router,
               private markerService: MarkerService) {
 
-    if (!this.authService.isLoggedIn()){
-      this.router.navigate(['/login']);
-    }else{
+//    if (!this.authService.isLoggedIn()){
+      //this.router.navigate(['/login']);
+//      this.router.navigate(['login'], { relativeTo: this.route });
+//    }else{
       this.initMap();
-    }
+//    }
 
   }
 
